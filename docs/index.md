@@ -74,6 +74,10 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./assembly4.html'> Meeting 19: Assembly Viewing + Gene Prediction
 
+### Meeting 20: R for Data Science
+
+### Meeting 21: More R for Data Science
+ 
 <!---- ### <a href='./dplyr.html'> Meeting 20: R and Data Manipulation with 'dplyr'
 
 ### <a href='./spatial.html'> Meeting 22: R for geospatial analysis (or R as GIS)
