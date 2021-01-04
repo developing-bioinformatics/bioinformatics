@@ -38,49 +38,47 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./bio_data_sci.html'> Meeting 2: Biology as a Data Science
 
-### <a href='./R_lab.html'> Lab 1: Getting started with R
+### <a href='./R_lab.html'> Meeting 3: Getting started with R
 
-### <a href='./R_Lab2.html'> Meeting 3: Getting started with R + Big-Data in Biology Presentations/Discussion
+### <a href='./R_Lab2.html'> Meeting 4: Getting started with R + Big-Data in Biology Presentations/Discussion
 
-### <a href='./R_datavis.html'> Meeting 4: Data Visualization in R
+### <a href='./R_datavis.html'> Meeting 5: Data Visualization in R
 
-### Lab 2: Setting up Git in RStudio
+### Meeting 6: Setting up Git in RStudio
 
-### <a href='./dna_seq.html'> Meeting 5: DNA Sequencing Technology
+### <a href='./dna_seq.html'> Meeting 7: DNA Sequencing Technology
 
-### <a href='./unix_shell.html'> Meeting 6: Introduction to the Unix Shell
+### <a href='./unix_shell.html'> Meeting 8: Introduction to the Unix Shell
 
-### <a href='./algorithms.html'> Meeting 7: Demystifying Algorithms
+### <a href='./algorithms.html'> Meeting 9: Demystifying Algorithms
 
-### <a href='./blast.html'> Meeting 8: Sequence alignment and BLAST
+### <a href='./blast.html'> Meeting 10: Sequence alignment and BLAST
 
-### <a href='./rBlast.html'> Lab 3: rBlast
+### <a href='./rBlast.html'> Meeting 11: rBlast
 
-### <a href='./metagenomics.html'> Meeting 9: Metagenomics
+### <a href='./metagenomics.html'> Meeting 12: Metagenomics
 
-### <a href='./metagenomics2.html'> Meeting 10: Metagenomics 2
+### <a href='./metagenomics2.html'> Meeting 13: Metagenomics 2
 
-### Lab 4: Metagenomics Lab
+### <a href='./mphylo.html'> Meeting 14: Phylogenetics
 
-### <a href='./mphylo.html'> Meeting 11: Phylogenetics
+### <a href='./opensci.html'> Meeting 15: Open Science, bioRxiv, and course projects
 
-### <a href='./opensci.html'> Meeting 12: Open Science, bioRxiv, and course projects
+### <a href='./software.html'> Meeting 16: Managing Bioinformatics software with R and Anaconda
 
-### <a href='./software.html'> Meeting 13: Managing Bioinformatics software with R and Anaconda
+### <a href='./assembly.html'> Meeting 17: Introduction to Genome Assembly
 
-### <a href='./assembly.html'> Lab 5: Introduction to Genome Assembly
+### <a href='./assembly2.html'> Meeting 18: More Assembly + Bash Scripting for reproducibility
 
-### <a href='./assembly2.html'> Meeting 14: More Assembly + Bash Scripting for reproducibility
+### <a href='./assembly3.html'> Meeting 19: Bacterial Genome + Hybrid Assembly
 
-### <a href='./assembly3.html'> Meeting 15: Bacterial Genome + Hybrid Assembly
+### <a href='./assembly4.html'> Meeting 20: Assembly Viewing + Gene Prediction
 
-### <a href='./assembly4.html'> Lab 6: Assembly Viewing + Gene Prediction
+### <a href='./dplyr.html'> Meeting 21: R and Data Manipulation with 'dplyr'
 
-### <a href='./dplyr.html'> Meeting 16: R and Data Manipulation with 'dplyr'
+<!---- ### <a href='./spatial.html'> Meeting 22: R for geospatial analysis (or R as GIS)
 
-### <a href='./spatial.html'> Meeting 17: R for geospatial analysis (or R as GIS)
-
-### <a href='./primary_biodiv.html'> Meeting 18: GBIF and geographic point-locality data
+### <a href='./primary_biodiv.html'> Meeting 23: GBIF and geographic point-locality data
 
 ### <a href='./hpc_access.html'> Lab 7A: HPC Access
 
@@ -94,10 +92,7 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./ENM_future_vis.html'> Meeting 21: Visualize ENM output
 
-
-
-
-<!---### "Big-Data" in Biology Presentations/Discussion
+### "Big-Data" in Biology Presentations/Discussion
 
 ### <a href='./R_basics.html'> Introduction to R (part 1/n)
 
