@@ -74,9 +74,9 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./assembly4.html'> Meeting 19: Assembly Viewing + Gene Prediction
 
-### <a href='./dplyr.html'> Meeting 20: R and Data Manipulation with 'dplyr'
+<!---- ### <a href='./dplyr.html'> Meeting 20: R and Data Manipulation with 'dplyr'
 
-<!---- ### <a href='./spatial.html'> Meeting 22: R for geospatial analysis (or R as GIS)
+### <a href='./spatial.html'> Meeting 22: R for geospatial analysis (or R as GIS)
 
 ### <a href='./primary_biodiv.html'> Meeting 23: GBIF and geographic point-locality data
 
