@@ -64,7 +64,7 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./opensci.html'> Meeting 15: Open Science, bioRxiv, and course projects
 
-### <a href='./software.html'> Meeting 16: Managing Bioinformatics software with R and Anaconda
+<!---- ### <a href='./software.html'> Meeting 16: Managing Bioinformatics software with R and Anaconda ---->
 
 ### <a href='./assembly.html'> Meeting 17: Introduction to Genome Assembly
 
