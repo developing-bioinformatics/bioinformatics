@@ -66,15 +66,15 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 <!---- ### <a href='./software.html'> Meeting 16: Managing Bioinformatics software with R and Anaconda ---->
 
-### <a href='./assembly.html'> Meeting 17: Introduction to Genome Assembly
+### <a href='./assembly.html'> Meeting 16: Introduction to Genome Assembly
 
-### <a href='./assembly2.html'> Meeting 18: More Assembly + Bash Scripting for reproducibility
+### <a href='./assembly2.html'> Meeting 17: More Assembly + Bash Scripting for reproducibility
 
-### <a href='./assembly3.html'> Meeting 19: Bacterial Genome + Hybrid Assembly
+### <a href='./assembly3.html'> Meeting 18: Bacterial Genome + Hybrid Assembly
 
-### <a href='./assembly4.html'> Meeting 20: Assembly Viewing + Gene Prediction
+### <a href='./assembly4.html'> Meeting 19: Assembly Viewing + Gene Prediction
 
-### <a href='./dplyr.html'> Meeting 21: R and Data Manipulation with 'dplyr'
+### <a href='./dplyr.html'> Meeting 20: R and Data Manipulation with 'dplyr'
 
 <!---- ### <a href='./spatial.html'> Meeting 22: R for geospatial analysis (or R as GIS)
 
