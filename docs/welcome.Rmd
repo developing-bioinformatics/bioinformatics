@@ -33,22 +33,21 @@ We will:
 
 ## Your Syllabus
 
-Can be found [here](https://github.com/rsh249/bioinformatics/raw/master/syllabus/BIO331_2019fall_syllabus.pdf). 
+Can be found [here](https://github.com/developing-bioinformatics/bioinformatics/raw/master/syllabus/BIO331_SP2021_syllabus.pdf). 
 
 ## Class Discussions
 
 We will hold weekly discussions on [Slack](https://introbioinformatics.slack.com).
 
 
-# What is Bioinformatics in 2019? 
+# What is Bioinformatics in 2021? 
 
-https://www.ncbi.nlm.nih.gov/pubmed/11552348
+[A proposed definition:2001](https://www.ncbi.nlm.nih.gov/pubmed/11552348)
 
-https://www.ebi.ac.uk/training/online/course/bioinformatics-terrified/what-bioinformatics-0
+[A modern definition](https://www.ebi.ac.uk/training/online/course/bioinformatics-terrified/what-bioinformatics-0)
 
-## Is it Data Science?
+[Is it Data Science?](https://datascience.berkeley.edu/about/what-is-data-science/)
 
-https://datascience.berkeley.edu/about/what-is-data-science/
 
 # For Next Time: Homework
 
@@ -58,11 +57,10 @@ Aim to collect about 20-30 data points and work together to decide on a standard
 
 We will work with your datasets over the next couple of weeks to discuss and demonstrate good data handling practices and data visualization techniques with the R programming language. You will NOT be graded based on how *good* your data are, but rather on the effort you put into the design and collection of your datasest.
 
-*Within two days* please post your data collection idea to the [#datacoll](https://introbioinformatics.slack.com/messages/CMR21G0FN) Slack channel.
-
-Bring your data with you to our next in-class meeting.
+*Within two days* please post your data collection idea to the [#datacoll](https://introbioinformatics.slack.com/archives/C01K1N821PH) Slack channel.
 
 
+[home](https://bio331.devbioinformatics.org)
 
 
 
