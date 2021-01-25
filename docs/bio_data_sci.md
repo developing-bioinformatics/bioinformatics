@@ -68,8 +68,8 @@ The "Data Science" of Biology
 
 
 + "Person who is better at biology than any programmer and better at programming than any biologist." 
-+ An intersection of coding skill, math/stats functionality, and biological specialization.
-+ [Current Example](https://careers.amnh.org/postings/2056)
++ An intersection of coding, data literacy, and biological specialization.
+
 
 <br><br>
 
@@ -91,14 +91,15 @@ In both Data Science and Bioinformatics the jobs of the future are going to requ
 
 ## Big Data: Volume, velocity, variety, and veracity
 
-The 4 'V's of big data:
+The [4+ 'V's of big data](https://www.ibmbigdatahub.com/sites/default/files/infographic_file/4-Vs-of-big-data.jpg):
 
-+ How much data is there now?
-+ How quickly are we making/recording/streaming more?
-+ How 'dirty' is it? 
-+ Can we trust data as truth?
++ Volume: How much data is there now?
++ Velocity: How quickly are we making/recording/streaming more?
++ Variety: How 'dirty' is it? 
++ Veracity: Can we trust data as truth?
 
-And [more](https://www.ibmbigdatahub.com/sites/default/files/infographic_file/4Vs_Infographic_final.pdf)
+[more V's]()
+[even more V's]()
 
 ---
 
@@ -201,7 +202,7 @@ Earth observation satellites have a growing history of contributing to our abili
 
 Pick one of the "big-data" resources mentioned in the preceeding slides, research the 4V's relating to that project and prepare to speak for ~2 minutes on your findings on Monday to share your findings with the class. 
 
-+ So that we don't have duplicates please sign up on the Slack [#topics channel](https://bio200-bioinformatics.slack.com/messages/CCMH74VNY)
++ So that we don't have duplicates please sign up on the Slack [#topics channel](https://introbioinformatics.slack.com/messages/CMRAB5YRH)
 + If you find or no of a big-data project not mentioned here (and there are many!) feel free to research what you find interesting.
 
 
