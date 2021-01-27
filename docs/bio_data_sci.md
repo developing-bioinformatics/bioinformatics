@@ -27,7 +27,7 @@ The growth of data generation and collection is far outpacing the ability to pro
 presumably by someone who has never visited a fire station."
 -- [From "Data Science From Scratch"](http://shop.oreilly.com/product/0636920033400.do)
 
-<img src="./images/Data_Science_VD.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="30%" style="display: block; margin: auto;" />
+<img src="./images/Data_Science_VD.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="40%" style="display: block; margin: auto;" />
 
 
 
@@ -82,7 +82,7 @@ In Biology, jobs are going to require the basics of data oriented disciplines.
 
 The [4+ 'V's of big data](https://www.ibmbigdatahub.com/sites/default/files/infographic_file/4-Vs-of-big-data.jpg):
 
-<img src="https://www.ibmbigdatahub.com/sites/default/files/infographic_file/4-Vs-of-big-data.jpg" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="50%" style="display: block; margin: auto;" />
+<img src="https://www.ibmbigdatahub.com/sites/default/files/infographic_file/4-Vs-of-big-data.jpg" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="40%" style="display: block; margin: auto;" />
 
 + Volume: How much data is there now?
 + Velocity: How quickly are we making/recording/streaming more?
@@ -111,13 +111,14 @@ The top data producer in biology is DNA sequencing:
 [Big Data: Astronomical or Genomical](https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002195)
 
 
-<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pbio.1002195/1/pbio.1002195.g001.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T014031Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=282718b446504a7f07eb1fde9c8ff94a2efb6f3b3bc1f9b109c4463f263b288a4035740d4dac3708ca3e438955bcbba5ecc79c66bb6fa010d44453231c15a9a55e0cd9a8bdb36c1408612393537b1fb607e41aa03f4d817cfa67aa4b5f8262228645fbf7e0cdfdd4d016a6fa40d0e6d297c9dceb511080c4ba83b6ac7c6d1fe77298e5446fe920fef5158e7d173841c1944f3236f63913ec123bc9ed9ca2b450fdb569ef7de500b24e1e95f893c1f2d1e84597c5ede1043f342e988e8f7caf856aaf6550f251e880ebe9217601dd5dc668f408612a83d047af07e075e32a9fa750a18a826455a8d60914cf26179b32cf5dbf0bd1ac30d55092ed3d3a7b091be8" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="70%" style="display: block; margin: auto;" />
+<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pbio.1002195/1/pbio.1002195.g001.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T014031Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=282718b446504a7f07eb1fde9c8ff94a2efb6f3b3bc1f9b109c4463f263b288a4035740d4dac3708ca3e438955bcbba5ecc79c66bb6fa010d44453231c15a9a55e0cd9a8bdb36c1408612393537b1fb607e41aa03f4d817cfa67aa4b5f8262228645fbf7e0cdfdd4d016a6fa40d0e6d297c9dceb511080c4ba83b6ac7c6d1fe77298e5446fe920fef5158e7d173841c1944f3236f63913ec123bc9ed9ca2b450fdb569ef7de500b24e1e95f893c1f2d1e84597c5ede1043f342e988e8f7caf856aaf6550f251e880ebe9217601dd5dc668f408612a83d047af07e075e32a9fa750a18a826455a8d60914cf26179b32cf5dbf0bd1ac30d55092ed3d3a7b091be8" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="80%" style="display: block; margin: auto;" />
 
 
 ---
 
 
 ## Genomics, Astronomy, Twitter, Youtube comparison:
+
 <img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pbio.1002195/1/pbio.1002195.t001.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T015718Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=5293964ebe297c3ac52a38f448ed5f55732e70faa214559ce7c228c2ae4ff630f87961d9904c36a7b6aa92db1047b3e9594017bf2877745c6b789be260fd8bfab7f3a755a1f07effe8f508bc50fe2ca368d5e8514a2d8e9b78d558a3e7a71535ba9ec39b80349809cc93f57026f2a8dca92617b3db39f973b21c7bd5c9fb7da8bb0e9ba125210a71d0f86543161f85c3c694899ad0f4ecb0f6175ea7702f8fad2f5450442fcdb6239e0a5d8619bc679523688b98a443765f70be8e04b33bf18ebcd8584fb98893da3ae890496646f37a6a09db12b240d547eb589c477a639695a124454c2aca98bae879a2c1dea7c26f606f58e80975b36b484d3e716cd1cca8" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="90%" style="display: block; margin: auto;" />
 
 
@@ -153,7 +154,7 @@ How does this increase complexity?
 "The problem is the growing gap between the accumulation of big data and researchers' knowledge about how to
 use it effectively."
 
-<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pcbi.1005755/1/pcbi.1005755.g002.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T020000Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=6cd2f280fb30c0fbc6c9637e6797eaddc70c616fde6b5d849a429ae8d6ea5efe20f96eb7fd72f54b0f50e7d0bd368b14dec702194242ddff9c6a56d9f54aa0c09191eca732ca2737bf1d33d1005fd86676563a5ec0a07e82686a5be1208176833b0b5eb094c33b4964ebc38daf9bbfd39d960e773e7b917481b60d7aa8b36f063ecde74561d7050aa1473286d1809932ffa07ea6bb81c32b87079cb446046aa153955c1dff3f3418328d8d63a2c9857e65522cb296e9f0d583bd6095dc567e2bc82f04d35fa6104a77a5f60e3dc2a02998243a88c1370bc672384add00cf7a6877040ced05f52895c86e914175cc735db2a59c64f5fd3b4917da82fee1f00ed6" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="40%" style="display: block; margin: auto;" />
+<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pcbi.1005755/1/pcbi.1005755.g002.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T020000Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=6cd2f280fb30c0fbc6c9637e6797eaddc70c616fde6b5d849a429ae8d6ea5efe20f96eb7fd72f54b0f50e7d0bd368b14dec702194242ddff9c6a56d9f54aa0c09191eca732ca2737bf1d33d1005fd86676563a5ec0a07e82686a5be1208176833b0b5eb094c33b4964ebc38daf9bbfd39d960e773e7b917481b60d7aa8b36f063ecde74561d7050aa1473286d1809932ffa07ea6bb81c32b87079cb446046aa153955c1dff3f3418328d8d63a2c9857e65522cb296e9f0d583bd6095dc567e2bc82f04d35fa6104a77a5f60e3dc2a02998243a88c1370bc672384add00cf7a6877040ced05f52895c86e914175cc735db2a59c64f5fd3b4917da82fee1f00ed6" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="60%" style="display: block; margin: auto;" />
 
 ---
 
@@ -176,7 +177,9 @@ use it effectively."
 
 
 
-<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pcbi.1005755/1/pcbi.1005755.g001.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T020119Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=86da4cf1d097d59f2b234213e523de210fedecfcc200041d9888affc4da190319721b2ba67c5764ffe7e5f511f5ce6c68b6db3ab82bf105d2d0be00e9041423049f207f1304a1223ea762d9bf81502138ca5bd3e73a0f0569e4ad10fde290a4a3e7665667b98841f1c6c254065e0fcf5d72dbdc00f2ebfdfe477e66e346b8e4d38ddc2ac8a0a9d39e37b60e9005c5a5a840940a79ee754bdf4eec136615b3c12eab6c92d73f3914e11e3921d730dd471cb115e7fb696ef4250616701d06e68261d78be199da4ee260d3c0631f3154999a8fcf3034c7f0a433798467f68d9590dba903354a72dfc38f7b15e5d94a37fb5d165c35e772e71b07d74c1399e4bcd0f" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="40%" style="display: block; margin: auto;" />
+<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pcbi.1005755/1/pcbi.1005755.g001.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210127%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210127T020119Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=86da4cf1d097d59f2b234213e523de210fedecfcc200041d9888affc4da190319721b2ba67c5764ffe7e5f511f5ce6c68b6db3ab82bf105d2d0be00e9041423049f207f1304a1223ea762d9bf81502138ca5bd3e73a0f0569e4ad10fde290a4a3e7665667b98841f1c6c254065e0fcf5d72dbdc00f2ebfdfe477e66e346b8e4d38ddc2ac8a0a9d39e37b60e9005c5a5a840940a79ee754bdf4eec136615b3c12eab6c92d73f3914e11e3921d730dd471cb115e7fb696ef4250616701d06e68261d78be199da4ee260d3c0631f3154999a8fcf3034c7f0a433798467f68d9590dba903354a72dfc38f7b15e5d94a37fb5d165c35e772e71b07d74c1399e4bcd0f" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="60%" style="display: block; margin: auto;" />
+
+[Barone, 2017](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005755)
 
 ---
 
@@ -191,6 +194,9 @@ Phenotypic Data
 
 <img src="./images/plantcv_001.jpg" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" width="50%" style="display: block; margin: auto;" />
 
+---
+
+## Other areas of Biological data growth
 
 Ecological Data Aggregation
 
