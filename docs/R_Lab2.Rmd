@@ -21,45 +21,58 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In the last session we saw the RStudio interface and started typing at the R command prompt to practice basic R calculations and variable setting. Then we saw how to read files into R.
 
+# R add-ins: Installing and Loading libraries
+
+One of the features of the R ecosystem is the extensive body of R libraries. These are pieces of code that others have written and freely share that do something. There are libraries for all kinds of basic and advanced statistics, modeling interfaces, bioinformatics tools, and more. There are libraries for all fields of scientific computing.
+
+Today we will install a library that provides us with some [interesting data to practice with](https://github.com/allisonhorst/palmerpenguins).
+
+```{R, eval=F}
+install.packages("palmerpenguins") 
+
+```
+
+And if that completed successfully:
+
+```{R}
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+head(penguins)
+write.csv(penguins, file='penguins.csv')
+```
+
 # More on Files
 
 As a review: Here is how we were reading our data files last time:
 
 ```{r}
-cars = read.table('https://raw.githubusercontent.com/rsh249/bioinformatics/master/data/mtcars.csv', header=T, sep = ',')
+penguins = read.table('penguins.csv', header=T, sep = ',')
 
-```
-
-## Write Files
-
-```{r}
-write.table(cars, file='mtcars.tab')
-write.csv(cars, file='mtcars.csv')
 ```
 
 Where are these files now?
 
 ## A note on Paths
 
-To use data stored on a computer we need to tell R where it is. This is done using paths. 
+To use data stored on a computer we need to tell R *exactly* where it is. We have to be very precise about the *path* to our file.
 
 Paths can be *absolute*:
 
-```{r}
-#cars <- read.csv('/home/rharbert/GitHub/bioinformatics/docs/mtcars.csv') #Linux path type for server
-#cars <- read.csv('/Users/rharbert/.../mtcars.csv') #Windows type if working on a personal machine
+```{R, eval=F}
+penguins <- read.csv('/home/rharbert/GitHub/bioinformatics/docs/penguins.csv') #Linux path type for server
+penguins <- read.csv('/Users/rharbert/.../penguins.csv') #Windows type if working on a personal machine
 ```
 **Your paths will be different**
 
 Folders/Directories are separate by / with the file name at the end.
     
-Paths can also be relative:
+Paths can also be relative: "From where I am open the mtcars file "
 
 ```{r}
-cars <- read.csv('mtcars.csv')
+penguins <- read.csv('penguins.csv')
 ```
 
-"From where I am open the mtcars file "
+
 
 ## Your are Here
 
@@ -74,107 +87,102 @@ Prints the current path of your R session.
 If you need to change the directory you are working in, use:
 
 ```{R, eval=F}
-setwd('/home/rharbert/GitHub/bioinformatics/docs/')
+setwd('/path/to/your/current/folder_where_you_keep_stuff_for_this')
 ```
 
 
 
 # Basic plotting
 
-One of R's biggest advantages is the ability to create high quality graphics in nearly any format or style. Today we will be working with the basic plotting features of R. These are good, but limited at times. Later we will take a look at the [ggplot library](https://ggplot2.tidyverse.org/). ggplot is the current 'state of the art' in graphics for R. 
+One of R's biggest advantages is the ability to create high quality graphics in nearly any format or style. Today we will be working with the basic plotting features of R. These are good, but limited at times. Soon we will take a look at the [ggplot library](https://ggplot2.tidyverse.org/). ggplot is the current 'state of the art' in graphics for R and a particularly expressive way of creating data visualizations.
+
 
 ```{r}
-cars=read.csv('mtcars.csv')
+head(penguins)
+plot(penguins) #just a command to plot stuff!
 ```
 
+OK. That was not so great. Let's try something more useful for visualizing these data. We can tell plot() which columns we want to create a scatterplot for:
 
 ```{r}
-head(cars)
-plot(cars)
-```
-
-OK. That was not so great. Let's try somethnig more useful for visualizing these data. We can tell plot() which columns we want to create a scatterplot for:
-
-```{r}
-colnames(cars)
-plot(cars[,'cyl'], cars[,'mpg'])
+colnames(penguins)
+plot(x=penguins[,'bill_length_mm'], y=penguins[,'bill_depth_mm'])
 ```
 
 OR we can create other types of plots by calling other functions. e.g., a histogram of boxplot:
 
 ```{r}
-hist(cars[,'mpg'])
+hist(penguins[,'bill_length_mm'])
 
 ```
 
 
 ```{r}
-boxplot(cars[,'hp'])
+boxplot(penguins[,'bill_length_mm']) #boxplot of bill length
+boxplot(penguins[,'bill_length_mm'] ~ penguins[,'species']) # boxplot of bill length by species
 ```
 
+## Add arguments/modify functions
 
-# Repeating Actions
+We can modify the attributes of these plots by manipulating various arguments in the basic functions.
 
-Programming is just getting your computer to do the same thing a bunch of times so you don't have to.
+e.g., add colors and change point appearance in a scatterplot:
 
-The fundamental structure in any programming language to make this happen is the Loop. We will look at loops to understand the process.
-
-## Loops
-
-Repeating tasks using loops
-
-```{r}
-for(i in 1:10) {
-print(i)
-}
-
+```{R}
+plot(x=penguins[,'bill_length_mm'], 
+     y=penguins[,'bill_depth_mm'], 
+     col=as.factor(penguins[,'species'])) # color by species name
 ```
 
-Catch loop output in a vector or list
-```{r}
-li = vector()
-for(i in 1:10){
-li[[i]]=log(i)
-}
+```{R}
+plot(x=penguins[,'bill_length_mm'], 
+     y=penguins[,'bill_depth_mm'], 
+     col=as.factor(penguins[,'species']),
+     pch=20) #change the points 
 ```
 
-## apply family functions
+There are lots of [options for 'pch' codes](https://www.datanovia.com/en/blog/pch-in-r-best-tips/) that add different symbols.
 
-The Apply functions in R provide efficient repetition that usually out-performs for loops.
+Now let's try to clean up the labels on this graph and add a legend.
 
-```{r}
-#Create a table
-y = cbind(seq(1:5),
-          seq(1:5),
-          seq(1:5),
-          seq(1:5),
-          seq(1:5))
-print(y)
-y = as.data.frame(y)
-li1 = apply(y, 1, sum) # row-wise
-li2 = apply(y, 2, sum) # column-wise
+```{R}
+plot(x=penguins[,'bill_length_mm'], 
+     y=penguins[,'bill_depth_mm'], 
+     col=as.factor(penguins[,'species']),
+     pch=20,
+     xlab='Bill Length (mm)',
+     ylab='Bill Depth (mm)') # add formatted axis labels
 
-li2 = lapply(y[, 1], log) #returns list
-li2 = sapply(y[, 1], log) #returns vector
 
-#replicate an operation, a wrapper for sapply
-rep = replicate(10, log(y[, 1]))
+plot(x=penguins[,'bill_length_mm'], 
+     y=penguins[,'bill_depth_mm'], 
+     col=as.factor(penguins[,'species']),
+     pch=20,
+     xlab='Bill Length (mm)',
+     ylab='Bill Depth (mm)') 
+legend('bottomright', 
+       pch=20,
+       legend = unique(as.factor(penguins[,'species'])),
+       col = unique(as.factor(penguins[,'species'])))
+
 
 
 ```
+
+Ahhh... Finally. A decent graph that has been customized to communicate some of the story these data tell.
 
 
 # Homework Assignment
 
 
-1) Read your data into R. Create a simple plot of some of your data. Post it to the [#plots](https://introbioinformatics.slack.com/messages/CMWDBLP8R) channel. 
-2) *DISCUSSION*: In the slack [#discussion](https://introbioinformatics.slack.com/messages/CN3DX55M3) channel we will host this week's discussion. Please search online for an R related resource for R beginners. This could be a book/eBook, a web tutorial, youtube video, or something else. Post what you find. Look through the resource you found and tell the group about it (what it is, how it is structured, who it is targetted to).
+1) Read your data into R. Create a simple plot of some of your data. Post it to the [#datacoll](https://introbioinformatics.slack.com/archives/C01K1N821PH) channel. 
+2) *DISCUSSION*: In the slack [#discussion](https://introbioinformatics.slack.com/archives/C01LSHZFA84) channel we will host this week's discussion. Please search online for an R related resource for R beginners. This could be a book/eBook, a web tutorial, youtube video, or something else. Post what you find. Look through the resource you found and tell the group about it (what it is, how it is structured, who is the target audience).
 
 
 
 
 
-# [Home](https://rsh249.github.io/bioinformatics)
+# [Home](https://bio331.devbioinformatics.org)
 
 
 
