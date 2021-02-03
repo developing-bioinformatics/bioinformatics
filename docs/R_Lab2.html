@@ -2880,11 +2880,11 @@ div.tocify {
 <h2>A note on Paths</h2>
 <p>To use data stored on a computer we need to tell R <em>exactly</em> where it is. We have to be very precise about the <em>path</em> to our file.</p>
 <p>Paths can be <em>absolute</em>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>penguins &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;/home/rharbert/GitHub/bioinformatics/docs/penguins.csv&#39;</span>) <span class="co">#Linux path type for server</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>penguins &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;/Users/rharbert/.../penguins.csv&#39;</span>) <span class="co">#Windows type if working on a personal machine</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>penguins &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;/home/yourusername/Documents/.../penguins.csv&#39;</span>) <span class="co">#Linux path type for server</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>penguins &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;/Users/rharbert/Documents/.../penguins.csv&#39;</span>) <span class="co">#Windows type if working on a personal machine</span></span></code></pre></div>
 <p><strong>Your paths will be different</strong></p>
 <p>Folders/Directories are separate by / with the file name at the end.</p>
-<p>Paths can also be relative: “From where I am open the mtcars file”</p>
+<p>Paths can also be relative: “From where I am open the penguins file”</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>penguins &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;penguins.csv&#39;</span>)</span></code></pre></div>
 </div>
 <div id="your-are-here" class="section level2">

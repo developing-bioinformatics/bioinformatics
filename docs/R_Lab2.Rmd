@@ -59,14 +59,14 @@ To use data stored on a computer we need to tell R *exactly* where it is. We hav
 Paths can be *absolute*:
 
 ```{R, eval=F}
-penguins <- read.csv('/home/rharbert/GitHub/bioinformatics/docs/penguins.csv') #Linux path type for server
-penguins <- read.csv('/Users/rharbert/.../penguins.csv') #Windows type if working on a personal machine
+penguins <- read.csv('/home/yourusername/Documents/.../penguins.csv') #Linux path type for server
+penguins <- read.csv('/Users/rharbert/Documents/.../penguins.csv') #Windows type if working on a personal machine
 ```
 **Your paths will be different**
 
 Folders/Directories are separate by / with the file name at the end.
     
-Paths can also be relative: "From where I am open the mtcars file "
+Paths can also be relative: "From where I am open the penguins file "
 
 ```{r}
 penguins <- read.csv('penguins.csv')
