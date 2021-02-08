@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-[home](https://rsh249.github.io/bioinformatics)
+[home](https://bio331.devbioinformatics.org)
 
 # Cool stuff:
 
@@ -54,7 +54,7 @@ The BBC Visual and Data Journalism team uses R and ggplot to create their public
 
 ## Read Census Data
 
-For this section we will read in a table of US Census Demographic data from https://www.kaggle.com/muonneutrino/us-census-demographic-data. The file can be found on the RStudio server at '/usr/share/data/kaggle/census.csv'. 
+For this section we will read in a table of US Census Demographic data from https://www.kaggle.com/muonneutrino/us-census-demographic-data. Download the file: 'acs2017_county_data.csv' (google sign in required on Kaggle).
 
 
 To read data into R we use:
@@ -63,7 +63,7 @@ read.csv()
 read.delim()
 
 ```{r, eval=TRUE}
-census = read.csv('/usr/share/data/kaggle/census.csv')
+census = read.csv('acs2017_county_data.csv') #check your PATH to this file
 head(census)
 
 ```
@@ -76,6 +76,7 @@ LOOK BACK: How do you write a table to a new file?
 For help and an overview of all of the graphics types that are available in ggplot check out the [R ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf)
 
 ```{r}
+#install.packages('ggplot2')
 library(ggplot2)
 ```
 
@@ -83,7 +84,7 @@ library(ggplot2)
 
 ```{r}
 ggplot(data = census) +
-  geom_point(mapping = aes(x = Citizen, y = TotalPop))
+  geom_point(mapping = aes(x = Men, y = Women))
 ```
 
 ## Graphs for single parameters:
@@ -92,51 +93,33 @@ ggplot(data = census) +
 
 ```{r}
 ggplot(data=census) +
-  geom_histogram(aes(x=Citizen), binwidth=100) 
+  geom_histogram(aes(x=VotingAgeCitizen), binwidth=500) 
 ```
 
 But the x-axis is based on the maximum value, not the effective range so the distribution of the data is tough to read.
 
 ```{r}
 ggplot(data=census) +
-  geom_histogram(aes(x=Citizen), binwidth=100)+
-  xlim(c(0,10000))
+  geom_histogram(aes(x=VotingAgeCitizen), binwidth=500)+
+  xlim(c(0,50000))
 ```
 
-That also got rid of an artifact near zero. Let's inspect the data for 'Citizen' to see what data could be causing that:
 
-```{r}
-#summary(census$Citizen)
-sum(census$Citizen <=0)
-```
 
-Are zero values real?
-
-#### Sidetrack: Logical subsetting
-
-We can use logical operators and the data.frame index notation to find ONLY those rows of data that have a zero value in the Citizen column.
-
-```{r}
-# test for Citizen ==0
-logic = census$Citizen==0
-# Then use this vector of logical results to index the data frame
-zerocit= census[logic,] #make sure to use the rows position -> left of the column
-#summary(zerocit)
-```
 ### Density:
 
 ```{r}
 ggplot(data=census) +
-  geom_density(aes(x=Citizen)) +
-  xlim(c(0,10000))
+  geom_density(aes(x=VotingAgeCitizen)) +
+  xlim(c(0,50000))
 ```
 
 ### geom_area()
 
 ```{r}
 ggplot(data=census) +
-  geom_area(stat='bin', bins = 30, aes(x=Citizen)) +
-  xlim(c(0,10000))
+  geom_area(stat='bin', bins = 30, aes(x=VotingAgeCitizen)) +
+  xlim(c(0,50000))
 ```
 
 ### For Discrete values: geom_bar()
@@ -204,20 +187,20 @@ ggplot(data=census) +
 #### Boxplots
 
 ```{R}
-ggplot(data=census[1:10000,]) + 
+ggplot(data=census[1:100,]) +  #an imperfect sample!
     geom_boxplot(aes(x=State, y=Poverty)) 
 ```
 
 #### Violin charts
 
 ```{R}
-ggplot(data=census[1:10000,]) + 
+ggplot(data=census[1:100,]) + 
     geom_violin(aes(x=State, y=Poverty)) 
 ```
 
 ## Facetting: Multipanel plots
 
-Plus more logical subsetting using the '%in%' operator.
+Plus logical subsetting using the '%in%' operator. (compare matches to a list of values)
 
 
 ```{R}
@@ -248,13 +231,13 @@ Open a new data file using:
 newdata = read.csv('/usr/share/data/classfiles/readlengths3.txt', sep=' ')
 ```
 
-These data are read lengths for three samples run on an Illumina sequencing instrument. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample.
+These data are read lengths for three samples. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample. [Read more about these data here!](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6082)
 
-Create a plot showing some attribute of the read length distribution that can be compared between these samples. Post to [#plots](https://introbioinformatics.slack.com/messages/CMWDBLP8R)
+Create a plot showing some attribute of the read length distribution that can be compared between these samples. Bring to next class.
 
 ## Part 2
 
-Re-make your plot from Monday and post to [#plots](https://introbioinformatics.slack.com/messages/CMWDBLP8R)
+Re-make your plot from last class and post to [#datacoll](https://introbioinformatics.slack.com/archives/C01K1N821PH).
 
 
-[home](https://rsh249.github.io/applied_bioinformatics)
+[home](https://bio331.devbioinformatics.org)
