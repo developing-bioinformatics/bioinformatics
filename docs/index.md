@@ -44,7 +44,7 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./R_datavis.html'> Meeting 5: Data Visualization in R
 
-### <a href='./R_datavis2.html'> Meeting 6: Data Visualiztion in R Part 2
+### <a href='./R_datavis2.html'> Meeting 6: Data Visualization in R Part 2
 
 ### <a href='./dna_seq.html'> Meeting 7: DNA Sequencing Technology
 
