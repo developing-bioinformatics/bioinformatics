@@ -139,6 +139,7 @@ knitr::include_graphics('./images/hgp_timeline.jpg')
 
 + Illumina
 + PacBio
++ IonTorrent
 + Nanopore
 + BGI
 
@@ -185,6 +186,34 @@ knitr::include_graphics('./images/hgp_timeline.jpg')
 <div align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E9-Rm5AoZGw?rel=0"; frameborder="0" allowfullscreen></iframe>
 </div>
+
+---
+
+## BGI & The $100 genome
+
+[Almost...](https://www.bgi.com/us/human-whole-genome-sequencing-from-600/)
+
+Based on DNA Nanoball Sequencing:
+
+```{R, echo=F}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/a/a9/BGI_DNA_nanoball_tube_to_array_2.png")
+```
+
+
+---
+
+## BGI
+
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/0bqIBtMS3xw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+---
+
+
+## SeqTech Wars
+
+[BGI is getting sued by Illumina for patent infringement](https://www.genomeweb.com/sequencing/illumina-wins-uk-patent-infringement-suit-against-bgi-affiliates)
 
 ---
 
