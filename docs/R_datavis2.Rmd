@@ -1,0 +1,149 @@
+---
+title: "Data Visualization in R Part 2"
+author: "Prof. Harbert"
+date: Meeting 6
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+  
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+[home](https://bio331.devbioinformatics.org)
+
+# Recent news: ggplot in the press
+
+The BBC Visual and Data Journalism team uses R and ggplot to create their publication graphics. A few weeks ago they released their toolbox on [GitHub](https://github.com/bbc/bbplot). More from [Medium](https://medium.com/bbc-visual-and-data-journalism/how-the-bbc-visual-and-data-journalism-team-works-with-graphics-in-r-ed0b35693535)
+
+
+# More Data vis with ggplot
+
+```{R}
+library(ggplot2)
+library(forcats)
+```
+
+## Read Census Data
+
+```{r, eval=TRUE}
+census = read.csv('acs2017_county_data.csv') #check your PATH to this file
+head(census)
+
+```
+
+
+### One Discrete X One Continuous parameter
+
+#### Boxplots
+
+```{R}
+ggplot(data=census[1:100,]) +  #an imperfect sample!
+    geom_boxplot(aes(x=State, y=Poverty)) 
+```
+
+#### Violin charts
+
+```{R}
+ggplot(data=census[1:100,]) + 
+    geom_violin(aes(x=State, y=Poverty)) 
+```
+
+## Facetting: Multipanel plots
+
+Plus logical subsetting using the '%in%' operator. (compare matches to a list of values)
+
+
+```{R}
+ggplot(data=census[census$State %in% c('Alabama', 'Oregon', 'New York', 'California'),]) + 
+    geom_point(aes(x=IncomePerCap, y=Poverty)) +
+    facet_grid(~State) + theme(axis.text.x = element_text(angle=90))
+    
+
+#try also facet_wrap()
+ggplot(data=census[census$State %in% c('Alabama', 'Oregon', 'New York', 'California'),]) + 
+    geom_point(aes(x=IncomePerCap, y=Poverty)) +
+    facet_wrap(~State) + theme(axis.text.x = element_text(angle=90))
+```
+
+## patchwork: Custom multipanel plots
+
+First, install [patchwork](https://patchwork.data-imaginist.com/), a library for code to build custom arrangements of multiple ggplot objects.
+
+```{R, eval=F}
+devtools::install_github("thomasp85/patchwork")
+```
+
+```{R}
+library(patchwork)
+```
+
+Then, create some plot objects by assigning ggplot pipelines to an object. 
+
+```{R}
+scplot = ggplot(data=census) + 
+    geom_point(aes(x=IncomePerCap, y=Poverty), alpha=0.1) +
+    geom_smooth(aes(x=IncomePerCap, y=Poverty)) 
+
+histplot = ggplot(data = census) +
+  geom_histogram(aes(x=IncomePerCap))
+
+histplot2 = ggplot(data = census) +
+  geom_histogram(aes(x=Poverty))
+
+
+```
+
+Now we can put together a single graph with patchwork.
+
+```{R}
+histplot + scplot
+
+histplot / scplot
+```
+# Save plots!
+
+```{R, eval=F}
+ggsave(filename = 'lastplot.png') # save the last plot
+
+saveaplot = histplot / scplot
+ggsave(filename = 'multiplot.png', plot = saveaplot)
+```
+# Save your work
+
+You should have been keeping your code in an R script file. Save that file now so that you can refer back to it later. Later we will talk more about managing your code in RStudio projects.
+
+
+# Homework
+
+## Part 1
+
+Download and open a new data file using:
+
+```{r, eval=F}
+download.file('https://zenodo.org/record/4527793/files/readlengths3.txt?download=1', destfile = 'readlengths3.txt')
+newdata = read.csv('readlengths3.txt', sep=' ')
+```
+
+These data are read lengths for three samples. I want to know how the read length distributions differ between these three samples. The DNA came from fossilized packrat middens dating back up to 3500 years ago and the degree of fragmentation may tell something about the age and/or preservation state of the sample. [Read more about these data here!](https://onlinelibrary.wiley.com/doi/full/10.1002/ece3.6082)
+
+Create a plot showing some attribute of the read length distribution that can be compared between these samples. Bring to next class.
+
+## Part 2
+
+Choose one of the plots above and modify it using one or more of the built-in themes that come with ggplot. [Guidance on themes here](https://ggplot2.tidyverse.org/reference/ggtheme.html). Try a few and see what you like and don't like about these themes.
+
+Bring your plot to next class.
+
+
+[home](https://bio331.devbioinformatics.org)
