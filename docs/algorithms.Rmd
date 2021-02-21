@@ -2,36 +2,27 @@
 title    : Demystifying Algorithms
 subtitle : BIO331 Introduction to Bioinformatics
 author   : Prof. Harbert
-mode     : selfcontained # {standalone, draft}
-cdn: false
-theme: journal
-widgets: [disqus, userecho]
-highlighter: prettify
-hitheme: twitter-bootstrap
-linenums: true
-disqus:
-  shortname: slidify
-
-
-
-assets:
-  js:
-    - "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
-    - "http://bartaz.github.io/sandbox.js/jquery.highlight.js"
---- .segue .dark .nobackground
-
-..
-
+date: 
+output:
+  xaringan::moon_reader:
+    css: [default, zh-CN.css]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
 ---
+
+
 
 ## What is an algorithm
 
 "A repeatable process for determining the solution to a problem."
 
-Presentation content adapted from [GDI-San Francisco presentation](https://www.teaching-materials.org/algorithms/#/) on algorithms under a (CC)BY-NC license.
+Presentation content adapted from [GDI-San Francisco presentation](https://www.teaching-materials.org/algorithms/#/)
 
+---
 
---- 
 
 ## Algorithms in "real-life"
 
@@ -69,6 +60,17 @@ E.g., Make N servings of pancakes.
 ---
 
 
+## How do you know if your algorithm is good?
+
+Humans can intuit meaning.
+
+Machines cannot (yet)...
+
++ Have you provided enough information for a machine to follow?
++ Is the question well defined for a computer?
+
+---
+
 
 ## How do you know if your algorithm is good?
 
@@ -101,7 +103,6 @@ Unix:
 + grep
 + sort
 + uniq
-+ (similar in awk)
 
 R:
 
@@ -114,10 +115,9 @@ R:
 
 ## Discussion
 
-Listen to the [interview with Cathy O'Neil on NPR](https://www.npr.org/templates/transcript/transcript.php?storyId=580617998). For discussion this week, reflect on the discussion of algorithm bias in data science. Post your inital reaction to [#discussion](https://introbioinformatics.slack.com/messages/CN3DX55M3) and then look for any other report of bias in computer models/algorithms in any field and share with the thread.
+Listen to the [interview with Cathy O'Neil on NPR](https://www.npr.org/templates/transcript/transcript.php?storyId=580617998). For discussion this week, reflect on the discussion of algorithm bias in data science. Post your inital reaction to [#discussion](https://introbioinformatics.slack.com/archives/C01LSHZFA84) and then look for any other report of bias in computer models/algorithms in any field and share with the thread.
 
 ---
-
 
 
 ## Other Resources RE Algorithms
@@ -132,6 +132,6 @@ Listen to the [interview with Cathy O'Neil on NPR](https://www.npr.org/templates
 
 
 
-[end](https://rsh249.github.io/bioinformatics)
+[fin](https://bio331.devbioinformatics.org)
 
 ---

@@ -1,7 +1,7 @@
 ---
 title: "Basic Local Alignment Search Tool (BLAST)"
 author: "Prof. Harbert"
-date: Meeting 7
+date: Meeting 10
 output: 
   html_document:
     theme: united
@@ -27,12 +27,6 @@ Sequence data on their own are not that informative. To make sense of it all we 
 
 When we want to align two sequences together we call that pairwise alignment. Finding the similarities between many sequences is called multiple sequence alignment. Today we will focus on pairwise alignment algorithms and the ubiquitous BLAST algorithm.
 
-First, let's look at the simple Needleman-Wusch alignment algorithm:[https://www.ebi.ac.uk/Tools/psa/emboss_needle/](https://www.ebi.ac.uk/Tools/psa/emboss_needle/). Needleman-Wunsch searches for the optimal alignment of any pair of DNA (or protein) sequences. N-W alignments are complete or "global", that is, it compares every position of the sequences. 
-
-Consider the algorithmic complexity of the Needleman-Wunsch alignment.
-
-
-
 # BLAST
 
 BLAST (Basic Local Alignment Search Tool) optimizes time complexity in pairwise alignment by searching for short, local, sequence matches and then extending the comparison out from the matching regions.
@@ -56,9 +50,7 @@ What is it? ^^^
 
 
 
-# Get Data
-
-*Work on the server*
+# BLAST Command Line Interface
 
 We will attempt to search human transcriptome data against the human genome using NCBI RefSeq data.
 

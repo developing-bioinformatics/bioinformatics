@@ -1,366 +1,265 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Demystifying Algorithms</title>
-  <meta charset="utf-8">
-  <meta name="description" content="Demystifying Algorithms">
-  <meta name="author" content="Prof. Harbert">
-  <meta name="generator" content="slidify" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
-  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
-    media="only screen and (max-device-width: 480px)" >
-  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
-  <link rel="stylesheet" href="libraries/highlighters/prettify/css/twitter-bootstrap.css" />
-  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
-  
-  <!-- Grab CDN jQuery, fall back to local if offline -->
-  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
-  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
-  <script data-main="libraries/frameworks/io2012/js/slides" 
-    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
-  </script>
-  
-  
+<html lang="" xml:lang="">
+  <head>
+    <title>Demystifying Algorithms</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Prof. Harbert" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="zh-CN.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
 
-</head>
-<body style="opacity: 0">
-  <slides class="layout-widescreen">
-    
-    <!-- LOGO SLIDE -->
-        <slide class="title-slide segue nobackground">
-  
-  <hgroup class="auto-fadein">
-    <h1>Demystifying Algorithms</h1>
-    <h2>BIO331 Introduction to Bioinformatics</h2>
-    <p>Prof. Harbert<br/></p>
-  </hgroup>
-  
-  <article></article>  
-  
-</slide>
-    
+# Demystifying Algorithms
+## BIO331 Introduction to Bioinformatics
+### Prof. Harbert
 
-    <!-- SLIDES -->
-    <slide class="segue dark nobackground" id="slide-1" style="background:;">
-  
-  <article data-timings="">
-    <p class='.</p>
+---
 
- '></article>
-  <!-- Presenter Notes -->
-  
-</slide>
 
-<slide class="" id="slide-2" style="background:;">
-  
-  <hgroup>
-    <h2>What is an algorithm</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <p>&quot;A repeatable process for determining the solution to a problem.&quot;</p>
 
-<p>Presentation content adapted from <a href="https://www.teaching-materials.org/algorithms/#/">GDI-San Francisco presentation</a> on algorithms under a (CC)BY-NC license.</p>
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+## What is an algorithm
 
-<slide class="" id="slide-3" style="background:;">
-  
-  <hgroup>
-    <h2>Algorithms in &quot;real-life&quot;</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <ul>
-<li>Finding a fruit in the grocery store</li>
-<li>Alphabetizing a list of names</li>
-<li>Re-organizing your kitchen/room/desk to find things easier</li>
-<li>Finding lost keys</li>
-<li>Diagnosing car problems</li>
-<li>Making your go-to dinner</li>
-</ul>
+"A repeatable process for determining the solution to a problem."
 
-<p>What are some other examples of algorithms you use?</p>
+Presentation content adapted from [GDI-San Francisco presentation](https://www.teaching-materials.org/algorithms/#/)
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+---
 
-<slide class="" id="slide-4" style="background:;">
-  
-  <hgroup>
-    <h2>What is the goal of any algorithm? Why formalize your route to a solution?</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <ul>
-<li>Solve your problem</li>
-<li>Be repeatable/reproducible</li>
-</ul>
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+## Algorithms in "real-life"
 
-<slide class="" id="slide-5" style="background:;">
-  
-  <hgroup>
-    <h2>BYOA: Build your own algorithm</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <p>In teams of two pick an algorithm that you use to make decisions. Then map out the process on the whiteboard.</p>
++ Finding a fruit in the grocery store
++ Alphabetizing a list of names
++ Re-organizing your kitchen/room/desk to find things easier
++ Finding lost keys
++ Diagnosing car problems
++ Making your go-to dinner
 
-<ul>
-<li>Show your thought process.</li>
-<li>Solve the most obvious problem first.</li>
-<li>Identify your tradeoffs and improve it.</li>
-</ul>
 
-<p>E.g., Make N servings of pancakes.</p>
+What are some other examples of algorithms you use?
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+---
 
-<slide class="" id="slide-6" style="background:;">
-  
-  <hgroup>
-    <h2>How do you know if your algorithm is good?</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <p>Complexity of an algorithm can be measured by:</p>
 
-<ul>
-<li>Time Complexity: How long does it take to find the solution?</li>
-<li>Space Complexity: How much <em>space</em> does it use? (memory)</li>
-</ul>
+## What is the goal of any algorithm? Why formalize your route to a solution?
 
-<p>The best algorithms minimize both, but often tradeoffs between these factors are limiting.</p>
++ Solve your problem
++ Be repeatable/reproducible
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+---
 
-<slide class="" id="slide-7" style="background:;">
-  
-  <hgroup>
-    <h2>For Bioinformatics</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <p>Algorithms are ubiquitous in bioinformatics. Many of the programs we will use are implementations of complex algorithms. It is not always necessary to understand exactly how an algorithm works, but it is important to be able to evaluate the performance for your task. </p>
 
-<ul>
-<li>Is this program time efficient enough for my task?</li>
-<li>Can this program analyze the data using the resources available.</li>
-</ul>
+## BYOA: Build your own algorithm
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+In teams of two pick an algorithm that you use to make decisions. Then map out the process on the whiteboard.
 
-<slide class="" id="slide-8" style="background:;">
-  
-  <hgroup>
-    <h2>Algorithms we have already seen:</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <p>Unix:</p>
++ Show your thought process.
++ Solve the most obvious problem first.
++ Identify your tradeoffs and improve it.
 
-<ul>
-<li>grep</li>
-<li>sort</li>
-<li>uniq</li>
-<li>(similar in awk)</li>
-</ul>
+E.g., Make N servings of pancakes.
 
-<p>R:</p>
+---
 
-<ul>
-<li>various base functions (min/max/mean)</li>
-<li>Reordering categories in ggplot figures</li>
-</ul>
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+## How do you know if your algorithm is good?
 
-<slide class="" id="slide-9" style="background:;">
-  
-  <hgroup>
-    <h2>Discussion</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <p>Listen to the <a href="https://www.npr.org/templates/transcript/transcript.php?storyId=580617998">interview with Cathy O&#39;Neil on NPR</a>. For discussion this week, reflect on the discussion of algorithm bias in data science. Post your inital reaction to <a href="https://introbioinformatics.slack.com/messages/CN3DX55M3">#discussion</a> and then look for any other report of bias in computer models/algorithms in any field and share with the thread.</p>
+Humans can intuit meaning.
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+Machines cannot (yet)...
 
-<slide class="" id="slide-10" style="background:;">
-  
-  <hgroup>
-    <h2>Other Resources RE Algorithms</h2>
-  </hgroup>
-  
-  <article data-timings="">
-    <ul>
-<li><a href="https://www.teaching-materials.org/algorithms/#/">GDI Intro to Algorithms</a></li>
-<li><a href="https://tzovar.as/demystifying-algorithms/">Demystifying Algorithms</a></li>
-<li><a href="https://www.tynker.com/blog/articles/ideas-and-tips/how-to-explain-algorithms-to-kids/">How to explain algorithms to kids</a></li>
-<li><a href="https://www.khanacademy.org/computing/computer-science/algorithms">Khan Academy: Algorithms</a></li>
-</ul>
++ Have you provided enough information for a machine to follow?
++ Is the question well defined for a computer?
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+---
 
-<slide class="" id="slide-11" style="background:;">
-  
-  <article data-timings="">
-    <p><a href="https://rsh249.github.io/bioinformatics">end</a></p>
 
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+## How do you know if your algorithm is good?
 
-<slide class="" id="slide-12" style="background:;">
-  
-  <article data-timings="">
-    
-  </article>
-  <!-- Presenter Notes -->
-  
-</slide>
+Complexity of an algorithm can be measured by:
 
-    <slide class="backdrop"></slide>
-  </slides>
-  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
-    <ul>
-      
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=1 title='NA'>
-         1
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='What is an algorithm'>
-         2
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Algorithms in &quot;real-life&quot;'>
-         3
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=4 title='What is the goal of any algorithm? Why formalize your route to a solution?'>
-         4
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=5 title='BYOA: Build your own algorithm'>
-         5
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=6 title='How do you know if your algorithm is good?'>
-         6
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=7 title='For Bioinformatics'>
-         7
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=8 title='Algorithms we have already seen:'>
-         8
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=9 title='Discussion'>
-         9
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=10 title='Other Resources RE Algorithms'>
-         10
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=11 title='NA'>
-         11
-      </a>
-    </li>
-    
-    <li>
-      <a href="#" target="_self" rel='tooltip' 
-        data-slide=12 title='NA'>
-         12
-      </a>
-    </li>
-    
-    </ul>
-  </div>  <!--[if IE]>
-    <script 
-      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
-    </script>
-    <script>CFInstall.check({mode: 'overlay'});</script>
-  <![endif]-->
-</body>
-  <!-- Load Javascripts for Widgets -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="http://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
++ Time Complexity: How long does it take to find the solution?
++ Space Complexity: How much *space* does it use? (memory)
 
-  <!-- Google Prettify -->
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
-  <script src='libraries/highlighters/prettify/js/lang-r.js'></script>
-  <script>
-    var pres = document.getElementsByTagName("pre");
-    for (var i=0; i < pres.length; ++i) {
-      pres[i].className = "prettyprint linenums";
+The best algorithms minimize both, but often tradeoffs between these factors are limiting.
+
+---
+
+
+
+## For Bioinformatics
+
+Algorithms are ubiquitous in bioinformatics. Many of the programs we will use are implementations of complex algorithms. It is not always necessary to understand exactly how an algorithm works, but it is important to be able to evaluate the performance for your task. 
+
++ Is this program time efficient enough for my task?
++ Can this program analyze the data using the resources available.
+
+---
+
+
+
+## Algorithms we have already seen:
+
+Unix:
+
++ grep
++ sort
++ uniq
+
+R:
+
++ various base functions (min/max/mean)
++ Reordering categories in ggplot figures
+
+
+---
+
+
+## Discussion
+
+Listen to the [interview with Cathy O'Neil on NPR](https://www.npr.org/templates/transcript/transcript.php?storyId=580617998). For discussion this week, reflect on the discussion of algorithm bias in data science. Post your inital reaction to [#discussion](https://introbioinformatics.slack.com/archives/C01LSHZFA84) and then look for any other report of bias in computer models/algorithms in any field and share with the thread.
+
+---
+
+
+## Other Resources RE Algorithms
+
++ [GDI Intro to Algorithms](https://www.teaching-materials.org/algorithms/#/)
++ [Demystifying Algorithms](https://tzovar.as/demystifying-algorithms/)
++ [How to explain algorithms to kids](https://www.tynker.com/blog/articles/ideas-and-tips/how-to-explain-algorithms-to-kids/)
++ [Khan Academy: Algorithms](https://www.khanacademy.org/computing/computer-science/algorithms)
+
+
+---
+
+
+
+[fin](https://bio331.devbioinformatics.org)
+
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
     }
-    prettyPrint();
-  </script>
-  <!-- End Google Prettify --> 
-  </html>
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
