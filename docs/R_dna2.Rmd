@@ -37,6 +37,15 @@ https://github.com/rsh249/bio331_2021/blob/main/R/r_dna1_vidcode.R
 
 Today we want to explore *some* of the tools available for exploratory analysis of genomic data with Bioconductor. We will load a genome data file in the FASTA format (a raw DNA sequence data file like, but distinct from FASTQ). Our exploration will look across the *E. coli* genome for patterns in the sequence. Along the way we will practice using Bioconductor tools and base R code along with several visualizations in *ggplot2*.
 
+*Think: Along the way make observations about the similarities and differences between FASTQ and FASTA file formats*
+
+Try:
+
+```{bash, eval=F}
+head SRR13764788.fastq
+zcat genome.fna.gz | head
+```
+
 ## Get Data and Read:
 
 ```{R, warning=F, message=F}
@@ -70,13 +79,18 @@ genome[[1]][100000:100050]
 
 ```
 
-## Counting Nucleotide Frequencies: GC
+## Counting Nucleotide Frequencies: 
 
+How many of each nucleotide are there in this sequence?
 
 ```{R}
-
 geno.freq = alphabetFrequency(genome, as.prob=T)[,1:4] # frequency for A, C, G, or T
+barplot(geno.freq) # Is this what we expect?
+
+#AT frequency
 geno.freq[[1]] + geno.freq[[4]]
+
+#GC frequency
 geno.freq[[2]] + geno.freq[[3]]
 
 ```
@@ -84,21 +98,91 @@ geno.freq[[2]] + geno.freq[[3]]
 
 ## How does nucleotide composition change over the genome
 
+In [*Bioinformatics Algorithms Ch1*](https://youtu.be/M6qVRaNjcY0) there is a discussion about finding the origin of replication in bacteria by looking for the dnaA box sequences; "The Common Words Problem". This chapter relies on algorithmic thinking to find common DNA sequence *words* known as kmers (aka oligomers). Kmer searching is a VERY common theme in bioinformatics. Organizing your searches on the basis of unique kmers can help your algorithm find target sequences in very large datasets.
+
+For a simple example: If we wanted to do a naive search for possible coding sequence start sites we might look for all start codons "AUG" in a sequence. (Template: TAC; Complement: ATG). Let's look at our genome squence for these words.
+
+[BioStrings reference](https://bioconductor.org/packages/release/bioc/vignettes/BSgenome/inst/doc/GenomeSearching.pdf)
+
 ```{R}
+p1 <- "ATG"
+p2 <- "TAC"
+count1 <- countPattern(p1, genome[[1]])
+count2 <- countPattern(p2, genome[[1]])
+
+count1 + count2
+
+
+```
+
+Hmm... How many genes are there in the *E. coli* genome? (Google It!)
+
+*Think: What else might we need to know to better predict where genes are going to be in this sequence?* (Hint: Think like a biologist. What do you know about genes?)
+
+Where are these matches found?
+
+```{R}
+match1 = matchPattern(p1, genome[[1]], max.mismatch = 0)
+match2 = matchPattern(p2, genome[[1]], max.mismatch = 0)
+match1
+match2
+
+matchdf1 = as.data.frame(match1@ranges)
+matchdf2 = as.data.frame(match2@ranges)
+
+ggplot() +
+  geom_density(data=matchdf1, aes(x=start), kernel='rectangular', n=4600, col='darkorange') + 
+  geom_density(data=matchdf2, aes(x=start), kernel='rectangular', n=4600, col='steelblue') + 
+  theme_minimal()
+
+```
+*Think: What is this graph showing you? ... Maybe nothing, but maybe something*
+
+
+## GC Ratio and DNA replication
+
+Here we are going to implement a modified solution to the GC ratio map to help find the pattern of deamination mutations associated with lagging strand DNA replication. [Watch Ch1 part 3](https://youtu.be/xmaag0IJO0c) 
+
+```{R}
+# calculate G and C counts in 100kb windows
 slidingGC = letterFrequencyInSlidingView(genome[[1]], 
                                          view.width=100000,
                                          letters=c("C", "G"), 
                                          as.prob = T)
+#convert to data frame
 slidingGC = as.data.frame(slidingGC)
+#compute G - C values for each window
 slidingGC$ratio = slidingGC$G - slidingGC$C
+#calculate genome positions (row numbers)
 slidingGC$position = 1:nrow(slidingGC)
 
-#sample to 100,000 nucleotide bins
+#sample to 100,000 nucleotide bins (to make plotting better)
 sampleGC = slidingGC[seq(1, nrow(slidingGC), by=100000),]
 
 ggplot(sampleGC) +
   geom_path(aes(x = position, y = ratio)) +
-  theme_minimal() 
+  theme_minimal() + 
+  xlab("Genomic Position") +
+  ylab("#G - #C")
 ```
+Where G - C is negative this is evidence that there is more cytosine than we might expect. We expect that this is a result of higher deamination mutation rates on the lagging strand synthesis. Therefore, where the line goes from negative to positive we might expect to find the functional origin of replication (even if not the DNA motifs associated with *ori*).
+
+# Homework:
+
+1) Read FASTQ data and plot read lengths and quality scores. [Watch demo here](https://youtu.be/E_HfxDJRE10).
+
+  Get fastq data using SRA ID number: SRR11206996
+  
+2) Download the genome for Cholera (*Vibrio cholerae*)
+  Use: *"ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/Vibrio_cholerae/representative/GCF_000829215.1_ASM82921v1/GCF_000829215.1_ASM82921v1_genomic.fna.gz"* to download the FASTA sequence file.
+  
+  Plot the frequency of all four nucleotides across the genome. Is it the same as *E. coli*?
+  
+  Create a plot of start codon kmers (ATG and TAC) density along the genome. How does this compare to *E. coli*?
+  
+  Create a visualization of the G - C difference in 100kb windows across the genome. Do we see evidence for a similar pattern around a hypothetical *ori* region?
 
 
+Submission details and dropbox link on eLearn course website.
+
+[Home](https://bio331.devbioinformatics.org)
