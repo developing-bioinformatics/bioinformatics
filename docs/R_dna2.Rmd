@@ -39,7 +39,7 @@ Today we want to explore *some* of the tools available for exploratory analysis 
 
 ## Get Data and Read:
 
-```{R, warning=F}
+```{R, warning=F, message=F}
 #load libraries
 library(ShortRead)
 library(Biostrings)
@@ -72,15 +72,33 @@ genome[[1]][100000:100050]
 
 ## Counting Nucleotide Frequencies: GC
 
+
 ```{R}
 
 geno.freq = alphabetFrequency(genome, as.prob=T)[,1:4] # frequency for A, C, G, or T
-geno.f = data.frame(GC=numeric(), AT=numeric())
-geno.f
-geno.f$GC = geno.freq[[1]] + geno.freq[[4]]
-geno.f$AT = geno.freq[[2]] + geno.freq[[3]]
+geno.freq[[1]] + geno.freq[[4]]
+geno.freq[[2]] + geno.freq[[3]]
 
 ```
+~50:50? [Expected for E. coli](http://dro.deakin.edu.au/eserv/DU:30034416/chen-bacterialgenomic-2010.pdf)
 
+## How does nucleotide composition change over the genome
+
+```{R}
+slidingGC = letterFrequencyInSlidingView(genome[[1]], 
+                                         view.width=100000,
+                                         letters=c("C", "G"), 
+                                         as.prob = T)
+slidingGC = as.data.frame(slidingGC)
+slidingGC$ratio = slidingGC$G - slidingGC$C
+slidingGC$position = 1:nrow(slidingGC)
+
+#sample to 100,000 nucleotide bins
+sampleGC = slidingGC[seq(1, nrow(slidingGC), by=100000),]
+
+ggplot(sampleGC) +
+  geom_path(aes(x = position, y = ratio)) +
+  theme_minimal() 
+```
 
 
