@@ -1,0 +1,86 @@
+---
+title: "R Bioconductor DNA Exploration"
+author: "Prof. Harbert"
+output: 
+  html_document:
+    theme: united
+    highlight: tango
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Bioconductor
+
+The [Bioconductor project](https://www.bioconductor.org/) provides tools for the analysis of genomic data in R. It is open-source and community driven with packages written, contributed, and maintained by bioinformatics scientists. There are more than [1900 packages included in the latest release](https://www.bioconductor.org/packages/release/BiocViews.html#___Software)
+
+## Getting Started
+
+To prepare for this lesson watch the video and review or follow along with the code linked below.
+
+### Watch:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/E_HfxDJRE10" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### Code: 
+
+https://github.com/rsh249/bio331_2021/blob/main/R/r_dna1_vidcode.R
+
+# Goal:
+
+Today we want to explore *some* of the tools available for exploratory analysis of genomic data with Bioconductor. We will load a genome data file in the FASTA format (a raw DNA sequence data file like, but distinct from FASTQ). Our exploration will look across the *E. coli* genome for patterns in the sequence. Along the way we will practice using Bioconductor tools and base R code along with several visualizations in *ggplot2*.
+
+## Get Data and Read:
+
+```{R, warning=F}
+#load libraries
+library(ShortRead)
+library(Biostrings)
+library(ggplot2)
+
+# get an E. coli genome from NCBI genomes FTP service
+download.file('ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/Escherichia_coli/reference/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz',
+              'genome.fna.gz')
+
+# read genome.fna.gz 
+#COOL! Direct read of compressed data
+
+genome = readDNAStringSet('genome.fna.gz')
+```
+
+## Basic DNA object exploration
+
+```{R}
+# genome length
+nchar(genome)
+
+# genome slicing
+# [[1]] --> first sequence in the DNAStringSet (in this case there is only one)
+# [1:10] --> get the first 10 nucleotides
+genome[[1]][1:10]
+
+genome[[1]][100000:100050]
+
+```
+
+## Counting Nucleotide Frequencies: GC
+
+```{R}
+
+geno.freq = alphabetFrequency(genome, as.prob=T)[,1:4] # frequency for A, C, G, or T
+geno.f = data.frame(GC=numeric(), AT=numeric())
+geno.f
+geno.f$GC = geno.freq[[1]] + geno.freq[[4]]
+geno.f$AT = geno.freq[[2]] + geno.freq[[3]]
+
+```
+
+
+

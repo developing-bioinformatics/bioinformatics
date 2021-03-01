@@ -52,7 +52,7 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./algorithms.html'> Meeting 9: Demystifying Algorithms
 
-### <a href='./blast.html'> Meeting 10: Sequence alignment and BLAST
+### <a href='./R_dna2.html'> Meeting 10: R Bioconductor DNA Exploration
 
 ### <a href='./rBlast.html'> Meeting 11: rBlast
 
