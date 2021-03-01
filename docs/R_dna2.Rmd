@@ -94,6 +94,7 @@ geno.freq[[1]] + geno.freq[[4]]
 geno.freq[[2]] + geno.freq[[3]]
 
 ```
+
 ~50:50? [Expected for E. coli](http://dro.deakin.edu.au/eserv/DU:30034416/chen-bacterialgenomic-2010.pdf)
 
 ## How does nucleotide composition change over the genome
@@ -136,6 +137,8 @@ ggplot() +
   theme_minimal()
 
 ```
+
+
 *Think: What is this graph showing you? ... Maybe nothing, but maybe something*
 
 
@@ -169,18 +172,10 @@ Where G - C is negative this is evidence that there is more cytosine than we mig
 
 # Homework:
 
-1) Read FASTQ data and plot read lengths and quality scores. [Watch demo here](https://youtu.be/E_HfxDJRE10).
-
-  Get fastq data using SRA ID number: SRR11206996
+1) Read FASTQ data and plot read lengths and quality scores. [Watch demo here](https://youtu.be/E_HfxDJRE10). Get fastq data using SRA ID number: SRR11206996
   
 2) Download the genome for Cholera (*Vibrio cholerae*)
-  Use: *"ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/Vibrio_cholerae/representative/GCF_000829215.1_ASM82921v1/GCF_000829215.1_ASM82921v1_genomic.fna.gz"* to download the FASTA sequence file.
-  
-  Plot the frequency of all four nucleotides across the genome. Is it the same as *E. coli*?
-  
-  Create a plot of start codon kmers (ATG and TAC) density along the genome. How does this compare to *E. coli*?
-  
-  Create a visualization of the G - C difference in 100kb windows across the genome. Do we see evidence for a similar pattern around a hypothetical *ori* region?
+  Use: *"ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/Vibrio_cholerae/representative/GCF_000829215.1_ASM82921v1/GCF_000829215.1_ASM82921v1_genomic.fna.gz"* to download the FASTA sequence file. Plot the frequency of all four nucleotides across the genome. Is it the same as *E. coli*? Create a plot of start codon kmers (ATG and TAC) density along the genome. How does this compare to *E. coli*? Create a visualization of the G - C difference in 100kb windows across the genome. Do we see evidence for a similar pattern around a hypothetical *ori* region?
 
 
 Submission details and dropbox link on eLearn course website.
