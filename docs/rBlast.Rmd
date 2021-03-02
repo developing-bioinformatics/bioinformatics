@@ -109,9 +109,9 @@ Prepare a BLAST query
 
 ```{R, message=F}
 #prepare
-bl <- blast(db=reference)
+bl <- blast(db=reference, type='blastn')
 #run
-cl <- predict(bl, dna)
+cl <- predict(bl, dna, BLAST_args="-max_target_seqs 1")
 
 cl[1:5,]
 #to view first 5 hits

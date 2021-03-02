@@ -2987,9 +2987,9 @@ div.tocify {
 <span id="cb8-2"><a href="#cb8-2"></a><span class="kw">makeblastdb</span>(reference, <span class="dt">dbtype =</span> <span class="st">&quot;nucl&quot;</span>)</span></code></pre></div>
 <p>Prepare a BLAST query</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">#prepare</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>bl &lt;-<span class="st"> </span><span class="kw">blast</span>(<span class="dt">db=</span>reference)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>bl &lt;-<span class="st"> </span><span class="kw">blast</span>(<span class="dt">db=</span>reference, <span class="dt">type=</span><span class="st">&#39;blastn&#39;</span>)</span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="co">#run</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a>cl &lt;-<span class="st"> </span><span class="kw">predict</span>(bl, dna)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>cl &lt;-<span class="st"> </span><span class="kw">predict</span>(bl, dna, <span class="dt">BLAST_args=</span><span class="st">&quot;-max_target_seqs 1&quot;</span>)</span>
 <span id="cb9-5"><a href="#cb9-5"></a></span>
 <span id="cb9-6"><a href="#cb9-6"></a>cl[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,]</span></code></pre></div>
 <div data-pagedtable="false">
