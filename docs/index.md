@@ -56,6 +56,17 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./rBlast.html'> Meeting 11: rBlast
 
+## <a href='https://datacarpentry.org/wrangling-genomics/'> Meeting 12-15: Data Carpentry Data Wrangling and Genomics Workshop (Variant Calling)
+
+### <a href='./assembly.html'> Meeting 16: Assembly 1
+
+### <a href='./assembly2.html'> Meeting 17: Assembly 2
+
+### <a href='./assembly3.html'> Meeting 18: Assembly 3
+
+### <a href='./assembly4.html'> Meeting 19: Assembly 4
+
+
 ### <a href='./metagenomics.html'> Meeting 12: Metagenomics
 
 ### <a href='./metagenomics2.html'> Meeting 13: Metagenomics 2
