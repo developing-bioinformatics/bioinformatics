@@ -48,7 +48,9 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./dna_seq.html'> Meeting 7: DNA Sequencing Technology
 
-### <a href='./unix_shell.html'> Meeting 8: Introduction to the Unix Shell
+### <a href='./unix_shell.html'> Meeting 8 (alt): Introduction to the Unix Shell
+
+### <a href='https://datacarpentry.org/shell-genomics/'> Meeting 8: Data Carpentry Workshop: Shell Genomics
 
 ### <a href='./algorithms.html'> Meeting 9: Demystifying Algorithms
 
@@ -67,28 +69,17 @@ After having completed Introduction to Bioinformatics you will be able to:
 ### <a href='./assembly4.html'> Meeting 19: Assembly 4
 
 
-### <a href='./metagenomics.html'> Meeting 12: Metagenomics
+### <a href='./metagenomics.html'> Meeting 20: Metagenomics
 
-### <a href='./metagenomics2.html'> Meeting 13: Metagenomics 2
+### <a href='./metagenomics2.html'> Meeting 21: Metagenomics 2
 
-### <a href='./mphylo.html'> Meeting 14: Phylogenetics
+### <a href='./mphylo.html'> Meeting 22: Phylogenetics
 
-### <a href='./opensci.html'> Meeting 15: Open Science, bioRxiv, and course projects
+### <a href='./opensci.html'> Meeting 23: Open Science, bioRxiv, and course projects
 
-<!---- ### <a href='./software.html'> Meeting 16: Managing Bioinformatics software with R and Anaconda ---->
+### Meeting 24+: R for Data Science
 
-### <a href='./assembly.html'> Meeting 16: Introduction to Genome Assembly
 
-### <a href='./assembly2.html'> Meeting 17: More Assembly + Bash Scripting for reproducibility
-
-### <a href='./assembly3.html'> Meeting 18: Bacterial Genome + Hybrid Assembly
-
-### <a href='./assembly4.html'> Meeting 19: Assembly Viewing + Gene Prediction
-
-### Meeting 20: R for Data Science
-
-### Meeting 21: More R for Data Science
- 
 <!---- ### <a href='./dplyr.html'> Meeting 20: R and Data Manipulation with 'dplyr'
 
 ### <a href='./spatial.html'> Meeting 22: R for geospatial analysis (or R as GIS)

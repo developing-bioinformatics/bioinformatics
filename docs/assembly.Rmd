@@ -1,7 +1,7 @@
 ---
 title: "Genome Assembly"
 author: "Prof. Harbert"
-date: Meeting 14
+date: Meeting 16
 output: 
   html_document:
     theme: united
@@ -15,9 +15,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Overview
-
-Illumina sequencing-by-synthesis technology is the dominant form of DNA sequencing at present. If you continue in biological research it is likely you will encounter this kind of thing at some point. Illumina is also becoming more widespread in medical genomic sequencing (e.g., cancer tumors, microbiome/metagenomics, pathogen ID). Illumina produces 'short-read' sequence data that usually consists of millions of 50-200 bp sequences. These are often "paired" (i.e., read in both directions which may or may not overlap in the middle). 
 
 
 # Genome Assembly
@@ -30,58 +27,118 @@ knitr::include_graphics('./images/genome_assembly.png')
 
 ## Setup
 
+In late December of 2019 doctors and scientists in Wuhan, China were tracking down the cause of an unknown respiritory virus. One part of this effort was to sequence RNA from bronchealveolar fluid from one of the patients. Those data are now available for us to work with:
+
+[Data from 9 samples sequenced on December 30, 2019](https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&from_uid=605983)
+
+[Publication of the resulting genome](https://doi.org/10.1038/s41586-020-2012-7)
+
+All of these samples are raw RNA sequencing data (represented here in the DNA alphabet) that were generated on an Illumina platform instrument resulting in paired end reads of 250 bp in length. This is a common, but tough, assembly scenario.
+
+
 ```{bash, eval = FALSE}
-fastq-dump -A "SRR7694205" --split-3
-less SRR7694205_1.fastq
+mkdir data
+SRA=SRR11092064
+fasterq-dump -e 4 --split-files -O data $SRA
+head -12 data/$SRA*.fastq
 
 ```
+## QC
 
-## fastqc
-
-If you have not already please use conda to install fastqc.
-
-```{bash, eval=FALSE}
-conda install -c bioconda fastqc
-```
-
-The quality scores recorded in the fastq files here are known as phred scores. The letters are codes for relative probability of error that can be found in a table [here](https://www.drive5.com/usearch/manual/quality_score.html). Using that table and the 'head' or 'less' commands read a few quality score strings and try to 'feel out' what the relative error looks like. Are there any patterns? Are some reads 'better' than others?
-
-There is a better way. We can use the program fastqc to visualize quality scoreso and more!
-
-```{bash, eval=FALSE}
-fastqc SRR7694205_* #This will run fastqc twice, once for each read file
-
-```
-
-Then look for the *.html files that were created and open for viewing.
-
-## Abyss 
-
-Conda install Abyss assembler and OpenMPI for parallelization. (NOTE: You must install openmpi first)
+Evaluate the read qualities for this dataset using fastqc. Are there any red flags?
 
 ```{bash, eval=F}
-conda install -c conda-forge openmpi
-conda install -c bioconda Abyss
+fastqc -t 2 data/$SRA*.fastq
 ```
+
+## Programs for De Novo Assembly
 
 [Illumina technical note on short read de novo assembly](https://www.illumina.com/Documents/products/technotes/technote_denovo_assembly_ecoli.pdf)
 
-Abyss is one option for *de novo* assembly with short (Illumina) data. For complex genomes Abyss can be a powerful assembler capable of resolving complex genomic structure. Like most de novo assemblers Abyss operates on graph theory wherein a network of read similarity is used to trace graphs (paths) connecting individual reads with potentially overlapping reads. All graph based assemblers first assemble the graph data structure and then process the graph for the longest *contigs*, or segments of sequence data that appear to be contiguous. 
-
-We will try out Abyss for our Zika data. The assemblies will not be perfect, but we can get a feel for how these analyses work and the kinds of data that we get back.
-
-```{bash, eval =F}
-abyss-pe name=zika1 k=75 in='SRR7694205_1.fastq SRR7694205_2.fastq' np=8 # Run abyss with 8 parallel instances
-
-cat zika1-contigs.fa
-```
+[Melbourne Bioinformatics De Novo Assembly tutorial](https://www.melbournebioinformatics.org.au/tutorials/tutorials/assembly/assembly-background/)
 
 [What is N50](http://www.molecularecologist.com/2017/03/whats-n50/)
 
-What is the longest *contig* that Abyss was able to assemble? How many contigs were there?
+All assembly programs work out from related core principles: In short they all look for short overlapping pieces of every read in a dataset and build a graph of these connections. This structure can then be traversed to find the longest pieces of contiguous overlap across many reads. Longer contigs can then collapse parts of the graph until there are no further overlaps.
 
-Check the longest contig against the NCBI databases using the [online blast portal](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome)
+The data structure involved here is known as a de Bruijn graph:
+
+```{R echo=FALSE, out.width='100%', fig.align='center'}
+download.file('https://cameroncounts.files.wordpress.com/2015/02/db.jpg?w=453&zoom=2', 'images/debruijn.jpg')
+knitr::include_graphics('images/debruijn.jpg')
+
+```
+
+We will try three such programs on our raw data here to see if we can find contiguous sequence in these bronchealveolar fluid RNA sequencing samples.
+
+### Velvet: A classic 
+
+Using velvet consists of a sequence of two commands:
+
++ velveth - analyzes kmers in the reads
++ velvetg - constructs and refines the assembly graph
+
+Run the following and take a coffee break:
+
+```{bash, eval=F}
+#make an output directory
+mkdir dirAssembly
+
+#set environmental parameter that controls velvet parallel processing
+# will run *parts* of the next steps up to 8x faster than single core operation
+export OMP_NUM_THREADS=16
+
+# run velveth: kmers
+velveth dirAssembly 99 -shortPaired -fastq -separate data/$SRA\_1.fastq data/$SRA\_2.fastq
+
+#run velvetg: assembly 
+velvetg dirAssembly -min_contig_lgth 5000
+
+```
+
+Look at the contigs file:
+
+```{R, eval=F}
+library(Biostrings)
+library(ggplot2)
+contigs = readDNAStringSet('dirAssembly/contigs.fa', format='fasta')
+print(contigs)
+maxcontig=max(contigs@ranges@width)
+maxcontigSTR = contigs[which(contigs@ranges@width == maxcontig)]
+as.character(maxcontigSTR)
+
+widths = data.frame(contigs@ranges@width)
+names(widths) = 'contig_length'
+ggplot(widths) + 
+  geom_density(aes(x=contig_length))
+
+```
+
+Check the sequence of our longest contig with web BLAST: https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome
+
+
+### SPAdes
+
+```{bash, eval=F}
+
+```
+
+### MEGAHIT: Specialized for metagenome (mixtures) assembly
+
+```{bash, eval=F}
+wget https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
+tar zvxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
+mv MEGAHIT-1.2.9-Linux-x86_64-static MEGAHIT
+./MEGAHIT/bin/megahit -1 data/$SRA\_1.fastq -2 data/$SRA\_2.fastq -o dirMEGAHIT
+
+```
+
+
+
+
 
 # Homework: 
 
-[Read the Illumina technical note on genome assembly](https://www.illumina.com/Documents/products/technotes/technote_denovo_assembly_ecoli.pdf) and post an explanation of one figure or table to slack [#discussion](https://introbioinformatics.slack.com/messages/CN3DX55M3)
+[Read the Illumina technical note on genome assembly](https://www.illumina.com/Documents/products/technotes/technote_denovo_assembly_ecoli.pdf) and post an explanation of one figure or table to slack #discussion.
+
+[home](https://bio331.devbioinformatics.org)
