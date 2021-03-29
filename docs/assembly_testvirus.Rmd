@@ -35,17 +35,26 @@ In late December of 2019 doctors and scientists in Wuhan, China were tracking do
 
 All of these samples are raw RNA sequencing data (represented here in the DNA alphabet) that were generated on an Illumina platform instrument resulting in paired end reads of 250 bp in length. This is a common, but tough, assembly scenario.
 
-Let's grab some of the data and see what we can do with it: 
-
 
 ```{bash, eval = FALSE}
 mkdir data
-SRA=SRR11092060
+
+#may try also https://sra-pub-sars-cov2.s3.amazonaws.com/run/SRR11092059/SRR11092059
+#fasterq-dump -e 4 --split-files -O data $SRA
+
+wget -bqc --output-document data/SRR11092061.R1.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092061/v300043428_L04_123_1.fq.gz 
+wget -bqc --output-document data/SRR11092061.R2.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092061/v300043428_L04_123_1.fq.gz 
+
+wget -bqc --output-document data/SRR11092058.R1.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092058/ICU4G_S1_L001_R1_001.fastq.gz 
+wget -bqc --output-document data/SRR11092058.R2.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092058/ICU4G_S1_L001_R2_001.fastq.gz
+
 wget -bqc --output-document data/SRR11092060.R1.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092060/v300043428_L04_124_1.fq.gz
 wget -bqc --output-document data/SRR11092060.R2.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092060/v300043428_L04_124_2.fq.gz
 
 # unzip all of the data files using gunzip
-ls data/*.fq.gz | xargs -P 2 -n 1 gunzip {}
+ls data/*.fq.gz | xargs -P 6 -n 1 gunzip {}
+
+
 
 ```
 ## QC
@@ -53,8 +62,64 @@ ls data/*.fq.gz | xargs -P 2 -n 1 gunzip {}
 Evaluate the read qualities for this dataset using fastqc. Are there any red flags?
 
 ```{bash, eval=F}
-fastqc -t 2 data/$SRA.R1.fq data/$SRA.R2.fq
+SRA=SRR11092061
+fastqc -t 2 data/$SRA*.fq
 ```
+
+
+## Muddy data: Clean it up
+
+The data in these samples is bulk RNA. Therefore it likely contains a lot of mRNA transcripts from the human host and any bacteria present in the sample. *Some* of these reads might come from the causative viral agent if we are lucky.
+
+One thing we can do to help get us on the right track for assembly is to align these reads to other viral genomes to filter for reads that at least *look like* they came from a virus genome.
+
+```{bash, eval=F}
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.1.genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.2.1.genomic.fna.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.3.1.genomic.fna.gz
+mv viral.*.fna.gz data/
+gunzip data/viral.*.fna.gz
+cat data/viral.*.fna > data/virus_all.fna
+
+```
+
+Index genome and align reads to all known virus genomes. Then convert SAM back to fastq for *only those reads that map to any virus genome*.
+
+```{bash, eval=F}
+
+bwa index data/virus_all.fna
+
+#for infile in data/*.R1.fq
+#do
+#  base=$(basename ${infile} .R1.fq)
+#  bwa mem -t 8 data/virus_all.fna data/${base}.R1.fq data/${base}.R2.fq > data/${base}.sam
+#done 
+
+#or cat all the R1 and R2 files and align/filter together
+cat data/*.R1.fq > data/uknownRNA.R1.fq
+cat data/*.R2.fq > data/uknownRNA.R2.fq
+bwa mem -t 8 data/virus_all.fna data/uknownRNA.R1.fq data/uknownRNA.R1.fq > data/unknown.sam
+
+samtools view -@ 8 -S -b data/unknown.sam > data/unknown.align.bam
+samtools view -@ 8 -b -F4 data/unknown.align.bam > data/unknown.align.final.bam
+samtools sort -@ 8 data/unknown.align.final.bam > data/unknown.align.sort.bam
+samtools index -@ 8 data/unknown.align.sort.bam
+samtools fastq -@ 8 data/unknown.align.sort.bam -1 data/unknown.filter.R1.fastq -2 data/unknown.filter.R2.fastq -s data/unknown.filter.single.fastq
+
+
+
+### old version
+#bwa mem -t 8 data/virus_all.fna data/$SRA\_1.fastq data/$SRA\_2.fastq > data/$SRA.sam
+
+#samtools view -@ 8 -S -b data/$SRA.sam > data/$SRA.align.bam
+#samtools view -@ 8 -b -F4 data/$SRA.align.bam > data/$SRA.align.final.bam
+#samtools sort -@ 8 data/$SRA.align.final.bam > data/$SRA.align.sort.bam
+#samtools index -@ 8 data/$SRA.align.sort.bam
+#samtools fastq -@ 8 data/$SRA.align.sort.bam -1 data/$SRA.filter.R1.fastq -2 data/$SRA.filter.R2.fastq -s data/$SRA.filter.single.fastq
+
+
+```
+
 
 ## Programs for De Novo Assembly
 
@@ -94,16 +159,16 @@ mkdir dirAssembly
 export OMP_NUM_THREADS=8
 
 # run velveth: kmers
-velveth dirAssembly 99 -shortPaired -fastq -separate data/$SRA.R1.fq data/$SRA.R2.fq
+velveth dirAssembly 31 -shortPaired -fastq -separate data/unknown.filter.R1.fastq data/unknown.filter.R2.fastq
 
 #run velvetg: assembly 
-velvetg dirAssembly -min_contig_lgth 5000
+velvetg dirAssembly 
 
 ```
 
 Look at the contigs file:
 
-```{R, eval=F}
+```{R, eval=T}
 library(Biostrings)
 library(ggplot2)
 contigs = readDNAStringSet('dirAssembly/contigs.fa', format='fasta')
@@ -124,46 +189,41 @@ Check the sequence of our longest contig with web BLAST: https://blast.ncbi.nlm.
 
 ### SPAdes
 
-Requires too much RAM for some of these samples and for the full concatenated dataset. Re-work later.
-
 ```{bash, eval=F}
-#don't run: requires too much RAM
-#spades.py -k 21,33,55,77 --careful -1 data/$SRA.R1.fq -2 data/$SRA.R2.fq -o spades_output
 
 ```
 
-### MEGAHIT
-
-+ Tests multiple kmer lengths
-+ Optimized for cleaning up metagenomes (mixtures)
+### MEGAHIT: Specialized for metagenome (mixtures) assembly
 
 ```{bash, eval=F}
-#installation: run ONLY ONCE, but path specific
+
 wget https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 tar zvxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 mv MEGAHIT-1.2.9-Linux-x86_64-static MEGAHIT
-
-#run
-./MEGAHIT/bin/megahit -1 data/$SRA.R1.fq -2 data/$SRA.R2.fq -o dirMEGAHIT
+./MEGAHIT/bin/megahit -m 0.5 -t 8 -1 data/$SRA\_1.fastq -2 data/$SRA\_2.fastq -o dirMEGAHIT
+./MEGAHIT/bin/megahit -m 0.5 -t 8 -1 data/unknown.filter.R1.fastq -2 data/unknown.filter.R2.fastq -o dirMEGAHIT
 
 ```
 
-Look at contigs:
+Let's look again at the contigs file:
 
-```{R, eval=F}
+```{R, eval=T}
 library(Biostrings)
 library(ggplot2)
-contigs = readDNAStringSet('diMEGAHIT/final.contigs.fa', format='fasta')
+contigs = readDNAStringSet('dirMEGAHIT/final.contigs.fa', format='fasta')
 print(contigs)
 maxcontig=max(contigs@ranges@width)
 maxcontigSTR = contigs[which(contigs@ranges@width == maxcontig)]
-as.character(maxcontigSTR)
+as.character(maxcontigSTR[[1]])
 
-widths = data.frame(contigs@ranges@width)
-names(widths) = 'contig_length'
-ggplot(widths) + 
-  geom_density(aes(x=contig_length))
 
 ```
+
+
+
+
+# Homework: 
+
+[Read the Illumina technical note on genome assembly](https://www.illumina.com/Documents/products/technotes/technote_denovo_assembly_ecoli.pdf) and post an explanation of one figure or table to slack #discussion.
 
 [home](https://bio331.devbioinformatics.org)

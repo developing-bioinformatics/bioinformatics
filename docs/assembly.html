@@ -2925,15 +2925,19 @@ div.tocify {
 <p><a href="https://www.ncbi.nlm.nih.gov/sra?linkname=bioproject_sra_all&amp;from_uid=605983">Data from 9 samples sequenced on December 30, 2019</a></p>
 <p><a href="https://doi.org/10.1038/s41586-020-2012-7">Publication of the resulting genome</a></p>
 <p>All of these samples are raw RNA sequencing data (represented here in the DNA alphabet) that were generated on an Illumina platform instrument resulting in paired end reads of 250 bp in length. This is a common, but tough, assembly scenario.</p>
+<p>Let’s grab some of the data and see what we can do with it:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">mkdir</span> data</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="va">SRA=</span>SRR11092064</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="ex">fasterq-dump</span> -e 4 --split-files -O data <span class="va">$SRA</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">head</span> -12 data/<span class="va">$SRA</span>*.fastq</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="va">SRA=</span>SRR11092060</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">wget</span> -bqc --output-document data/SRR11092060.R1.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092060/v300043428_L04_124_1.fq.gz</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">wget</span> -bqc --output-document data/SRR11092060.R2.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092060/v300043428_L04_124_2.fq.gz</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># unzip all of the data files using gunzip</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">ls</span> data/*.fq.gz <span class="kw">|</span> <span class="fu">xargs</span> -P 2 -n 1 gunzip {}</span></code></pre></div>
 </div>
 <div id="qc" class="section level2">
 <h2>QC</h2>
 <p>Evaluate the read qualities for this dataset using fastqc. Are there any red flags?</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">fastqc</span> -t 2 data/<span class="va">$SRA</span>*.fastq</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">fastqc</span> -t 2 data/<span class="va">$SRA</span>.R1.fq data/<span class="va">$SRA</span>.R2.fq</span></code></pre></div>
 </div>
 <div id="programs-for-de-novo-assembly" class="section level2">
 <h2>Programs for De Novo Assembly</h2>
@@ -2957,10 +2961,10 @@ div.tocify {
 <span id="cb3-3"><a href="#cb3-3"></a></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co">#set environmental parameter that controls velvet parallel processing</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co"># will run *parts* of the next steps up to 8x faster than single core operation</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="bu">export</span> <span class="va">OMP_NUM_THREADS=</span>16</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="bu">export</span> <span class="va">OMP_NUM_THREADS=</span>8</span>
 <span id="cb3-7"><a href="#cb3-7"></a></span>
 <span id="cb3-8"><a href="#cb3-8"></a><span class="co"># run velveth: kmers</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="ex">velveth</span> dirAssembly 99 -shortPaired -fastq -separate data/<span class="va">$SRA</span>\_1.fastq data/<span class="va">$SRA</span>\_2.fastq</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="ex">velveth</span> dirAssembly 99 -shortPaired -fastq -separate data/<span class="va">$SRA</span>.R1.fq data/<span class="va">$SRA</span>.R2.fq</span>
 <span id="cb3-10"><a href="#cb3-10"></a></span>
 <span id="cb3-11"><a href="#cb3-11"></a><span class="co">#run velvetg: assembly </span></span>
 <span id="cb3-12"><a href="#cb3-12"></a><span class="ex">velvetg</span> dirAssembly -min_contig_lgth 5000</span></code></pre></div>
@@ -2981,21 +2985,39 @@ div.tocify {
 </div>
 <div id="spades" class="section level3">
 <h3>SPAdes</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"></code></pre></div>
+<p>Requires too much RAM for some of these samples and for the full concatenated dataset. Re-work later.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#don&#39;t run: requires too much RAM</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#spades.py -k 21,33,55,77 --careful -1 data/$SRA.R1.fq -2 data/$SRA.R2.fq -o spades_output</span></span></code></pre></div>
 </div>
-<div id="megahit-specialized-for-metagenome-mixtures-assembly" class="section level3">
-<h3>MEGAHIT: Specialized for metagenome (mixtures) assembly</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">wget</span> https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">tar</span> zvxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz</span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">mv</span> MEGAHIT-1.2.9-Linux-x86_64-static MEGAHIT</span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="ex">./MEGAHIT/bin/megahit</span> -1 data/<span class="va">$SRA</span>\_1.fastq -2 data/<span class="va">$SRA</span>\_2.fastq -o dirMEGAHIT</span></code></pre></div>
-</div>
-</div>
-</div>
-<div id="homework" class="section level1">
-<h1>Homework:</h1>
-<p><a href="https://www.illumina.com/Documents/products/technotes/technote_denovo_assembly_ecoli.pdf">Read the Illumina technical note on genome assembly</a> and post an explanation of one figure or table to slack #discussion.</p>
+<div id="megahit" class="section level3">
+<h3>MEGAHIT</h3>
+<ul>
+<li>Tests multiple kmer lengths</li>
+<li>Optimized for cleaning up metagenomes (mixtures)</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">#installation: run ONLY ONCE, but path specific</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">wget</span> https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">tar</span> zvxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="fu">mv</span> MEGAHIT-1.2.9-Linux-x86_64-static MEGAHIT</span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#run</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="ex">./MEGAHIT/bin/megahit</span> -1 data/<span class="va">$SRA</span>.R1.fq -2 data/<span class="va">$SRA</span>.R2.fq -o dirMEGAHIT</span></code></pre></div>
+<p>Look at contigs:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">library</span>(Biostrings)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>contigs =<span class="st"> </span><span class="kw">readDNAStringSet</span>(<span class="st">&#39;diMEGAHIT/final.contigs.fa&#39;</span>, <span class="dt">format=</span><span class="st">&#39;fasta&#39;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="kw">print</span>(contigs)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>maxcontig=<span class="kw">max</span>(contigs<span class="op">@</span>ranges<span class="op">@</span>width)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>maxcontigSTR =<span class="st"> </span>contigs[<span class="kw">which</span>(contigs<span class="op">@</span>ranges<span class="op">@</span>width <span class="op">==</span><span class="st"> </span>maxcontig)]</span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="kw">as.character</span>(maxcontigSTR)</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>widths =<span class="st"> </span><span class="kw">data.frame</span>(contigs<span class="op">@</span>ranges<span class="op">@</span>width)</span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="kw">names</span>(widths) =<span class="st"> &#39;contig_length&#39;</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="kw">ggplot</span>(widths) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">x=</span>contig_length))</span></code></pre></div>
 <p><a href="https://bio331.devbioinformatics.org">home</a></p>
+</div>
+</div>
 </div>
 
 
