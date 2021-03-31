@@ -178,7 +178,7 @@ velvetg dirAssembly -min_contig_lgth 5000
 Look at the contigs file:
 
 ```{R, eval=T, messages=F}
-library(Biostrings)
+suppressMessages(library(Biostrings)) #quiet down Biostrings!
 library(ggplot2)
 contigs = readDNAStringSet('dirAssembly/contigs.fa', format='fasta')
 print(contigs)
@@ -202,7 +202,7 @@ Check the sequence of our longest contig with web BLAST: https://blast.ncbi.nlm.
 SPAdes is another assembly program. Here by default there are several rounds of assembly trying different kmer lengths '-k'. Here there are also a few extra error correction modules. In general SPAdes requires more computation time and resources, but yields a better assembly.
 
 ```{bash, eval=F}
-spades.py -k 21,33,55,77 --careful -1 data/unmapped.R1.fq -2 data/unmapped.R2.fq -o spades_output
+spades.py -t 8 -k 21,33,55,77 --careful -1 data/unmapped.R1.fq -2 data/unmapped.R2.fq -o spades_output
 
 ```
 Look at contigs:
