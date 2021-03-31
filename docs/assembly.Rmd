@@ -35,26 +35,99 @@ In late December of 2019 doctors and scientists in Wuhan, China were tracking do
 
 All of these samples are raw RNA sequencing data (represented here in the DNA alphabet) that were generated on an Illumina platform instrument resulting in paired end reads of 250 bp in length. This is a common, but tough, assembly scenario.
 
-Let's grab some of the data and see what we can do with it: 
+Let's grab some of the data and see what we can do with it: [Don't try to run this without verifying that you have several hundred GB of available storage space] 
+
+Here we will be working with SRR11092062 and SRR11092063. Each of these have data from two Illumina Hiseq 3000 runs and comprise a total of ~120 million read pairs (82GB of data), BUT consider that ~98% of this is probably human.
 
 
 ```{bash, eval = FALSE}
 mkdir data
-SRA=SRR11092060
-wget -bqc --output-document data/SRR11092060.R1.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092060/v300043428_L04_124_1.fq.gz
-wget -bqc --output-document data/SRR11092060.R2.fq.gz https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092060/v300043428_L04_124_2.fq.gz
 
-# unzip all of the data files using gunzip
-ls data/*.fq.gz | xargs -P 2 -n 1 gunzip {}
+#hiseq
+declare -a hiseq=( \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092062/v300043428_L02_127_1.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092062/v300043428_L02_127_2.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092062/v300043428_L04_122_1.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092062/v300043428_L04_122_2.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092063/v300043428_L02_126_1.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092063/v300043428_L02_126_2.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092063/v300043428_L04_121_1.fq.gz" \
+"https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092063/v300043428_L04_121_2.fq.gz" \
+)
+
+for file in "${hiseq[@]}"
+do
+  echo $file "\n"
+  # parse the SRA id number
+  SRA=$(echo $file | cut -d '/' -f5)
+  echo $SRA
+  #parse 1 or 2
+  READSET=$(echo $file | cut -d '_' -f4)
+  LNUM=$(echo $file | cut -d '_' -f2)
+  echo $LNUM
+  echo $READSET
+  # get the data
+  wget -bqc -o log.txt --output-document data/$SRA.$LNUM.$READSET "$file"
+done
+
+ls data/*fq.gz | xargs -P 4 -n 1 gunzip {}
+
+cat data/*.1.fq > data/all_reads.R1.fq
+cat data/*.2.fq > data/all_reads.R2.fq
 
 ```
+
+
 ## QC
 
 Evaluate the read qualities for this dataset using fastqc. Are there any red flags?
 
 ```{bash, eval=F}
-fastqc -t 2 data/$SRA.R1.fq data/$SRA.R2.fq
+fastqc -t 2 data/all_reads.R1.fq data/all_reads.R2.fq
+
 ```
+
+## Cleaning up our Data
+
+In any genome assembly you are going to have a hard time getting clean assembly graphs when you have material from more than one organism. Our data here are "metatranscriptomic" meaning that we have RNA from many organisms (of course some of this RNA is from an RNA genome so not *technically* transcribed). Much of this is probably from the host (humans), some maybe RNA from microbiome bacteria, and some is hopefully from our virus of interest.
+
+The single biggest thing we can do to help our chances of assembly will be to remove the major contaminants. In this case we should remove any reads that map to the human genome. For this we will use the GRCh38 (https://www.ncbi.nlm.nih.gov/genome/guide/human/) reference genome indexed for alignment with bwa.
+
+[Don't run this:]
+
+```{bash, eval=F}
+# download the reference FASTA file
+wget --output-document data/human_ref.fna.gz https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz
+
+#unzip the compressed fna.gz to raw fna file
+gunzip data/human_ref.fna.gz
+
+# index with BWA (runs several hours)
+bwa index data/human_ref.fna
+
+```
+
+Now that we have an index of a genome we can align with bwa and use samtools to filter reads the DON'T align. That is, we want to collect reads that find no match in the human genome because we are looking for a virus in a haystack of human transcripts.
+
+[DON'T RUN THIS: Est time to align is several hours using 8 cores]
+
+```{bash, eval=TRUE}
+#align with bwa mem
+bwa mem -t 8 data/human_ref.fna data/all_reads.R1.fq data/all_reads.R2.fq > data/all_reads.sam
+
+# samtools: filter reads that DO NOT map to the reference and convert to fastq
+#convert to BAM
+samtools view -@ 8 -S -b data/all_reads.sam > data/all_reads.bam
+#sort
+samtools sort -@ 8 -o data/all_reads.sort.bam data/all_reads.bam
+#output unmapped read pairs
+samtools view -@ 8 -u -f 12 -F 256 data/all_reads.sort.bam > data/unmapped.bam
+samtools fastq -@ 8 data/unmapped.bam -1 data/unmapped.R1.fq -2 data/unmapped.R2.fq
+
+du -sh data/unmapped.*.fq
+```
+
+That yields about 1.2GB of total data (or about 1.4% of what we started with).
 
 ## Programs for De Novo Assembly
 
@@ -68,7 +141,7 @@ All assembly programs work out from related core principles: In short they all l
 
 The data structure involved here is known as a de Bruijn graph:
 
-```{R echo=FALSE, out.width='100%', fig.align='center'}
+```{R echo=FALSE, out.width='80%', fig.align='center'}
 download.file('https://cameroncounts.files.wordpress.com/2015/02/db.jpg?w=453&zoom=2', 'images/debruijn.jpg')
 knitr::include_graphics('images/debruijn.jpg')
 
@@ -94,7 +167,8 @@ mkdir dirAssembly
 export OMP_NUM_THREADS=8
 
 # run velveth: kmers
-velveth dirAssembly 99 -shortPaired -fastq -separate data/$SRA.R1.fq data/$SRA.R2.fq
+# the number we provide "31" gives a kmer value for building our graphs. In practice we would want to try several to optimize this number.
+velveth dirAssembly 31 -shortPaired -fastq -separate data/unmapped.R1.fq data/unmapped.R2.fq
 
 #run velvetg: assembly 
 velvetg dirAssembly -min_contig_lgth 5000
@@ -103,7 +177,7 @@ velvetg dirAssembly -min_contig_lgth 5000
 
 Look at the contigs file:
 
-```{R, eval=F}
+```{R, eval=T, messages=F}
 library(Biostrings)
 library(ggplot2)
 contigs = readDNAStringSet('dirAssembly/contigs.fa', format='fasta')
@@ -115,7 +189,8 @@ as.character(maxcontigSTR)
 widths = data.frame(contigs@ranges@width)
 names(widths) = 'contig_length'
 ggplot(widths) + 
-  geom_density(aes(x=contig_length))
+  geom_density(aes(x=contig_length)) +
+  scale_x_log10()
 
 ```
 
@@ -124,11 +199,26 @@ Check the sequence of our longest contig with web BLAST: https://blast.ncbi.nlm.
 
 ### SPAdes
 
-Requires too much RAM for some of these samples and for the full concatenated dataset. Re-work later.
+SPAdes is another assembly program. Here by default there are several rounds of assembly trying different kmer lengths '-k'. Here there are also a few extra error correction modules. In general SPAdes requires more computation time and resources, but yields a better assembly.
 
 ```{bash, eval=F}
-#don't run: requires too much RAM
-#spades.py -k 21,33,55,77 --careful -1 data/$SRA.R1.fq -2 data/$SRA.R2.fq -o spades_output
+spades.py -k 21,33,55,77 --careful -1 data/unmapped.R1.fq -2 data/unmapped.R2.fq -o spades_output
+
+```
+Look at contigs:
+
+```{R, eval=T}
+contigs = readDNAStringSet('spades_output/contigs.fasta', format='fasta')
+print(contigs)
+maxcontig=max(contigs@ranges@width)
+maxcontigSTR = contigs[which(contigs@ranges@width == maxcontig)]
+as.character(maxcontigSTR)
+
+widths = data.frame(contigs@ranges@width)
+names(widths) = 'contig_length'
+ggplot(widths) + 
+  geom_histogram(aes(x=contig_length)) + 
+  scale_x_log10()
 
 ```
 
@@ -144,16 +234,16 @@ tar zvxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 mv MEGAHIT-1.2.9-Linux-x86_64-static MEGAHIT
 
 #run
-./MEGAHIT/bin/megahit -1 data/$SRA.R1.fq -2 data/$SRA.R2.fq -o dirMEGAHIT
+./MEGAHIT/bin/megahit -t 8 -1 data/unmapped.R1.fq -2 data/unmapped.R2.fq  -o dirMEGAHIT
 
 ```
 
-Look at contigs:
+Look at contigs: 
 
-```{R, eval=F}
-library(Biostrings)
-library(ggplot2)
-contigs = readDNAStringSet('diMEGAHIT/final.contigs.fa', format='fasta')
++ see note about fasta headings: https://github.com/voutcn/megahit/issues/54
+
+```{R, eval=T}
+contigs = readDNAStringSet('dirMEGAHIT/final.contigs.fa', format='fasta')
 print(contigs)
 maxcontig=max(contigs@ranges@width)
 maxcontigSTR = contigs[which(contigs@ranges@width == maxcontig)]
@@ -162,7 +252,8 @@ as.character(maxcontigSTR)
 widths = data.frame(contigs@ranges@width)
 names(widths) = 'contig_length'
 ggplot(widths) + 
-  geom_density(aes(x=contig_length))
+  geom_histogram(aes(x=contig_length)) + 
+  scale_x_log10()
 
 ```
 
