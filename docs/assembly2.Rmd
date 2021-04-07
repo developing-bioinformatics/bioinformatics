@@ -1,7 +1,7 @@
 ---
 title: "Viewing your Genome Assembly"
 author: "Prof. Harbert"
-date: "Meeting 14"
+date: "Meeting 19"
 output: 
   html_document:
     theme: united
@@ -20,59 +20,13 @@ use_python('/path/to/python') #EDIT
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-[home](https://rsh249.github.io/bioinformatics)
+[home](https://bio331.devbioinformatics.org)
 
 # Overview 
 
-Today we will look at the genome assemblies we attempted last time with Abyss. 
+Today we will look at the genome assemblies we attempted last time. 
 
 With remaining time this lesson will put together a reproducible Bash script to perform and visualize our genome assembly.
-
-
-# First Look: Genome Assembly
-
-Once you have contigs the  challenge becomes viewing the assembly and understanding how well this characterizes the genome.
-
-Today we will be exploring some of the tools for visualizing and improving upon our Nanopore assemblies.
-
-## Quast: Genome stats and visualization
-
-One very useful tool for examining genome statistics is Quast. This helps visualize how much and which parts of the genome our contigs cover.
-
-Conda install Quast:
-
-```{bash, eval=F}
-conda install -c bioconda quast
-```
-
-If not already done, download the Zika reference genome and then run Quast to visualize the contigs we generated last time with Abyss.
-
-```{bash, eval=F}
-#get reference genome:
-esearch -db nucleotide -query "NC_012532.1" | efetch -format fasta > ref.fa
-
-head ref.fa
-
-```
-
-Then pass the reference sequence, the assembled contigs file, and the raw read data to the Quast program:
-
-```{bash, eval=F}
-
-### Check a reference
-refdata=ref.fa
-assembly=zika1-contigs.fa
-reads1=SRR7694205_1.fastq
-reads2=SRR7694205_2.fastq
-
-quast.py $assembly -R $refdata --pe1 $reads1 --pe2 $reads2 -o quast_zika 
-
-
-```
-
-Look at the files in the 'quast_zika' folder. Including 'report.html', 'icarus_viewers/contig_size_viewer.html'
-
-How *good* is this assembly? Hint: It's not. Probably because most of this sequence data is not from the viral genome. Also, the short-read data can be difficult to assemble into large fragments when data are sparse.
 
 # Scripting: Putting together reproducible analyses
 
@@ -80,33 +34,7 @@ Anything that you can run by typing at the Unix command prompt (i.e., *most* bio
 
 ## Setting up your script
 
-Create a new file using 'nano'
-
-```{bash, eval=F}
-nano bash_assemble
-```
-
-In the nano prompt type:
-
-```{bash, eval=F}
-#!/bin/bash
-#This is a comment
-echo "This is a test"
-```
-
-And then type "Ctrl+o" to save changes and "Ctrl+x" to exit. (You can type just "Ctrl+x" and answere "Y" when asked to save)
-
-Then to RUN the script:
-
-```{bash, eval=F}
-bash bash_assemble
-```
-
-You should see output that says "This is a test"
-
-We can now add any Unix command to the bash script and they will all be run in sequence when we run the script.
-
-For example open the script and modify to be:
+Open a new text file in RStudio (save with ".sh" file extension) and add:
 
 ```{bash, eval=F}
 #!/bin/bash
@@ -115,7 +43,11 @@ echo "This is a test"
 ls -lh
 ```
 
-Run the script again. What is the output?
+Run the script. What is the output?
+
+```{bash, eval=F}
+bash ./pathto/shell_assembly_script.sh
+```
 
 ## Script Organization
 
@@ -127,7 +59,7 @@ Open your script again and add comment lines (Start each line with '#') to the t
 + Current Term/Year
 + Citation of software you are using (at least version #s)
 + Source of data (ID number and/or URL)
-+ Pre-requisite programs
++ A list of required programs
 
 ## Setting Variables
 
@@ -145,10 +77,10 @@ And call as:
 echo $var
 ```
 
-Add the path to your data (e.g., '/usr/share/.....') to the top of the script
+For example, you may want to add the path to your data (e.g., put it in your project directory) to the top of the script
 
 ```{bash, eval=F}
-datapath='~/sra'
+datapath='./data'
 #then check it with:
 echo $datapath
 #and try and use it in a command:
@@ -159,35 +91,108 @@ ls -lh $datapath
 
 As you work on your script and add commands it is usually a good idea to test frequently.
 
-Recall that you run a script as:
+From the terminal you can run your script as:
 
 ```{bash, eval=F}
-bash bash_assemble
+bash ./pathto/shell_assembly_script.sh
 ```
 
 ## Adding programs
 
-Add variables to the reads files and run Abyss. 
+Add variables to the reads files and run the genome assembly of your choice. 
+
+e.g.,
 
 ```{bash, eval=F}
-reads1=SRR7694205_1.fastq
-reads2=SRR7694205_2.fastq
+reads1=data/unmapped.R1.fq
+reads2=data/unmapped.R2.fq
+dirout=dirMEGAHIT
+megahit -t 8 -1 $reads1 -2 $reads2 -o $dirout
 
-abyss-pe name=zika1 k=75 in='$reads1 $reads2' np=8 
+```
 
+## Submit to your Git repository
+
+Don't forget to *commit* and *push* this code to your code repository for the class. (*Make sure you are in your active RStudio project and save the code file there*)
+
+[GitHub in RStudio guide](https://youtu.be/MdmnE3AnkQE)
+
+
+# First Look: Assessment of Genome Assembly
+
+Once you have contigs the  challenge becomes viewing the assembly and understanding how well this characterizes the genome.
+
+Today we will be exploring some of the tools for visualizing and improving upon our Nanopore assemblies.
+
+## Quast: Genome stats and visualization
+
+[More notes on genome assembly and Quast here](https://astrobiomike.github.io/genomics/de_novo_assembly#quast)
+
+One very useful tool for examining genome statistics is Quast. This helps visualize how much and which parts of the genome our contigs cover.
+
+Install Quast from SourceForge repository: http://quast.sourceforge.net/docs/manual.html#sec1
+
+```{bash, eval=F}
+cd ~
+mkdir src
+cd src
+wget https://downloads.sourceforge.net/project/quast/quast-5.0.2.tar.gz
+tar -xzf quast-5.0.2.tar.gz
+mv quast-5.0.2 quast
+cd quast
+./install.sh
+cd ..
+cd ..
+```
+
+Next edit your ~/.bashrc file to provide your environment with the path to Quast so you won't have to worry about that in the future.
+
+```{bash, eval=F}
+nano ~/.bashrc
+
+#add a line at the END of the file with :
+export PATH=$PATH:~/src/quast
+
+#close with Ctrl+x and answer Y to save
+
+source ~/.bashrc
+```
+
+Now run quast. With this command quast will:
+
++ Find contigs in each of our assemblys of length > 1000 bp
++ Align reads to these contigs and calculate coverage
++ Provide basic assembly statistics (e.g, [N50](https://en.wikipedia.org/wiki/N50,_L50,_and_related_statistics))
++ Predict genes with glimmer (http://ccb.jhu.edu/software/glimmer/index.shtml)
+
+
+```{bash, eval=F}
+assemblyMH=dirMEGAHIT/final.contigs.fa
+assemblySPADES=spades_output/contigs.fasta
+assemblyVELVET=dirVelvet/contigs.fa
+reads1=data/unmapped.R1.fq
+reads2=data/unmapped.R2.fq
+
+quast.py -o quast_output --pe1 data/unmapped.R1.fq --pe2 data/unmapped.R1.fq --glimmer -t 4 -m 1000 -l "MEGAHIT, METASPADES, VELVET" $assemblyMH $assemblySPADES $assemblyVELVET
 
 ```
 
 
-# Homework 
+Look at the files in the 'quast_output' folder. Open in browser 'report.html', 'icarus_viewers/contig_size_viewer.html'
 
-Modify the bash script to also:
-+ Download the reads files
-+ Run fastqc on the reads files
-+ Download the reference genome
-+ Run the Quast assessment after running Abyss
+Now, we also benefit from being able to check our work. These assemblies *should* be similar to the reference genome. Let's use quast to compare with a known assembly:
 
-Post these bash scripts to your Git repositories and then add a code snippet post to Slack [#general](https://introbioinformatics.slack.com/messages/CMJ7DPBRB). We will review some of these for Wednesday.
+```{bash, eval=F}
+curl -o 'Wuhan-Hu1.fasta' 'https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi?tool=portal&save=file&log$=seqview&db=nuccore&report=fasta&id=1798174254&extrafeat=null&conwithfeat=on&hide-cdd=on'
 
-[home](https://rsh249.github.io/bioinformatics)
+ref=Wuhan-Hu1.fasta
+quast.py -R $ref -o quast_wRef --pe1 data/unmapped.R1.fq --pe2 data/unmapped.R1.fq --glimmer -t 4 -m 1000 -l "MEGAHIT, METASPADES, VELVET" $assemblyMH $assemblySPADES $assemblyVELVET
+
+```
+
+# After Class:
+
+Work on developing a genome assembly script that runs fastqc, assembly with metaSPAdes and MEGAHIT, and visualizes the resulting assemblies with Quast. We will workshopt these scripts next class.
+
+[home](https://bio331.devbioinformatics.org)
 
