@@ -1,7 +1,7 @@
 ---
-title: "Bacterial Genomes and Hybrid Long Read Assembly"
+title: "Short, Long, and Hybrid Genome Assembly"
 author: "Prof. Harbert & Alex Baryiames"
-date: "Meeting 15"
+date: "Meeting 18?"
 output: 
   html_document:
     theme: united
@@ -21,42 +21,46 @@ knitr::opts_chunk$set(root.dir = '~/BIO331/hybrid')
 
 # Scaling Up
 
-Assembling the zika virus genome was  a good warm-up to get familiar with some of the tools for working with whole genome sequence data. Now we will scale up our analyses and try some new software for building bacterial genomes.
+Assembling the SARS-CoV-2 virus genome was a good warm-up to get familiar with some of the tools for working with whole genome sequence data. Now we will scale up our analyses and try some new software for building somewhat larger bacterial genomes.
 
-Recall that the virus assembly that we started with ended up with many contig sequences, none long enough to cover the entire genome, and lot's of contamination. The likely non-viral sequence reads are probably responsible for creating a difficult to resolve de Bruijn graph in Abyss, resulting in many contig sequences, when we really want one. One way to deal with problems like this using modern sequencing technology is to sequence long-read data in addition to the traditional (and efficient) short-read Illumina data. Today we will look at how long-read data impacts the assembly of a larger (bacterial) genome.
+The larger genome being targeted here (~5 million bp) is going to be more complicated to assemble than the SARS-CoV-2 29kb genome. Here we will test assembling this genome with only short read Illumina data, long read Nanopore data, and a hybrid assembly using both long and short reads. In general, short read technology is more accurate, but longer reads help us resolve particularly tangled portions of the graph and make for better (more complete) assemblies.
 
 
 # New data:
 
-Raw bacterial whole genome data from Illumina and Nanopore sequencing experiments: 
+Raw bacterial (*Klebsiella pneumoneae*) whole genome data from Illumina and Nanopore sequencing experiments: 
 
 https://www.ncbi.nlm.nih.gov/sra/?term=SAMEA3357010
 
 
 ```{bash, eval=F, message=F, cache=T}
-
+mkdir hybrid_assemble
+cd hybrid_assemble
+mkdir data
+#set number of threads to use for parallelization
+nthreads=8
+#set variables pointing to the SRA run ID for 
+#nanopore data
 nanoraw="SRR5665597"
+#illumina short read data
 shortraw="ERR1023775"
-nthreads=12
 
-fastq-dump $nanoraw --split-3
-fastq-dump $shortraw --split-3
+fasterq-dump -e $nthreads -O data $nanoraw
+fasterq-dump -e $nthreads --split-files -O data $shortraw
 
 ```
-
 
 The ERR1023775 data is the *short-read* dataset. Check the data quality with fastqc.
 
 ```{bash, eval = F, message=F, cache=T}
-fastqc $shortraw* #run fastqc for both forward (1) and reverse (2) reads files
+fastqc -t $nthreads data/$shortraw* 
 ```
 
-The SRR5665597 data is from a Nanopore sequencing experiment. To examine these data for quality use [NanoPlots](https://github.com/wdecoster/NanoPlot) as fastqc makes assumptions about the data being in short-read formats.
+The SRR5665597 data is from a Nanopore sequencing experiment. Expect these results to look *different* because Nanopore data have a lower per base accuracy and variable read lengths.
 
 ```{bash, eval=F, message=F, cache=T}
-NanoPlot --fastq $nanoraw.fastq --outdir Nanoplots
+fastqc -t $nthreads --nano data/$nanoraw*
 ```
-
 
 How do these data look?
 
@@ -67,11 +71,25 @@ Unicycler is a program that is specifically designed for the assembly of bacteri
 
 The Unicycler GitHub [README](https://github.com/rrwick/Unicycler#background) has an EXCELLENT demonstration of how it deals with de Bruijn graph complexities.
 
-Running Unicycler: Illumina Only
+## Install Unicycler
+
+Crap, we finally have to use anaconda...
+
+```{bash, eval=F}
+module load miniconda
+conda create -y --name py368 python==3.6.8
+conda install -f -y -q --name py33 -c conda-forge --file requirements.txt
+conda activate py368
+conda install -c bioconda unicycler
+#conda deactivate 
+```
+
+## Running Unicycler: Illumina Only
+
 
 ```{bash, eval=F, message=F, cache=T}
-#Illumina Assembly 
-unicycler  -1 $shortraw\_1.fastq -2 $shortraw\_2.fastq -o unicycler_short --threads $nthreads
+#Illumina only Assembly 
+unicycler  -1 data/$shortraw\_1.fastq -2 data/$shortraw\_2.fastq -o unicycler_short --threads $nthreads
 ```
 
 
@@ -79,17 +97,26 @@ Running Unicycler: Nanopore long reads only
 
 ```{bash, eval=F, message=F, cache=T}
 #Long read assembly
-unicycler -l $nanoraw.fastq -o unicycler_long --threads $nthreads
+unicycler -l data/$nanoraw.fastq -o unicycler_long --threads $nthreads
 ```
 
 Running Unicycler: Hybrid assembly (Short + Long to resolve tangled graph)
 
 ```{bash, eval=F, message=F, cache=T}
 #Hybrid Assembly 
-unicycler -1 $shortraw\_1.fastq -2 $shortraw\_2.fastq -l $nanoraw.fastq -o unicycler_hybrid --threads $nthreads
+unicycler -1 data/$shortraw\_1.fastq -2 data/$shortraw\_2.fastq -l data/$nanoraw.fastq -o unicycler_hybrid --threads $nthreads
 ```
 
-# Homework
+# Visualize in Quast
 
-The above assemblies will take several hours to run. Work through each line in this document, or better yet, add these lines to a bash script and run the whole analysis at once. In either case, verify that the analyses complete and check the output folders specified by Unicycler for contigs files. The lab this week will be visualizing these assemblies in Quast and looking for evidence that the long reads and hybrid assembly better resolve the graph related complexities of the assembled genome.
+```{bash, eval=F}
+assemblyILL=unicycler_illumina/assembly.fasta
+assemblyNANO=unicycler_long/assembly.fasta
+assemblyHYB=unicycler_hybrid/assembly.fasta
+quast.py -o quast_hybrid --pe1 data/$shortraw\_1.fastq --pe2 data/$shortraw\_2.fastq --nanopore $nanoraw* --glimmer --threads $nthreads -m 1000 -l "illumina, nanopore, hybrid" $assemblyILL $assemblyNANO $assemblyHYB
 
+```
+
+Next class we will look at the quast output and discuss the pipeline and results.
+
+[home](https://bio331.devbioinformatics.org)
