@@ -1,7 +1,7 @@
 ---
 title: "Metagenomics"
 author: "Prof. Harbert"
-date: Meeting 9
+date: Meeting 19
 output: 
   html_document:
     theme: united
@@ -28,7 +28,7 @@ There is some confusion in the scientific literature regarding the proper terms 
 
 **Metabarcoding**: Classifying single gene/short regions of amplified DNA from many sources. (Related to DNA barcoding --> identifying specific samples based on a short region of DNA sequence)
 
-**Metagenomics**:  Classifying mixed whole genome data from many organisms. Including multiple bacterial genome assembly from mixed samples.
+**Metagenomics**:  Classifying mixed whole genome data from many organisms. Example: assembling genomes for multiple bacterial strains in a mixed community.
 
 **Metataxonomics**: Classifying DNA sequence data from mixed samples to identify what organisms are present.
 
@@ -38,65 +38,153 @@ However, many people use metagenomics to cover the last two (-genomics and -taxo
 
 Tour: [https://www.ncbi.nlm.nih.gov/](https://www.ncbi.nlm.nih.gov/) and [ftp://ftp.ncbi.nlm.nih.gov/](ftp://ftp.ncbi.nlm.nih.gov/)
 
-# Fast(er) Altorithms
 
-There are many approaches to classify large amounts of DNA sequence data in more efficient ways that maintain or improve upon the accuracy of BLAST. In general these methods involve generating complex data structures from the reference data that are relatively efficient to search through. We will test two programs that implement current strategies: Centrifuge and Kraken(2). 
+## Setting up a Reference Database
 
-For the following examples your instructor has prepared appropriate database files as these can take significant computational time and are not possible to assemble during class time.
+These data come from the early genome sequencing of SARS-CoV-2 when scientists in Wuhan, China were working on identifying the causitive agent of an unknown respiratory syndrome causing pneumonia and death. 
 
-We will re-analyze the MATK eDNA data from the rBLAST segment. Look for differences in efficiency (time and space) between these programs and BLAST. Also, note any differences in the output and how the results are evaluated. To do this you should run the command 'top' on the server command prompt and watch what is happening and how long it takes.
+One approach to the problem might have been to classify the unknown data from the RNA metagenomic sample collected from a patient against a database of all known viral sequences.
 
-For reference: The BLAST search on the same barcode11 file took ~4 hours and 12GB of RAM to complete.
+*Setup a new working directory*
 
-## Centrifuge
-
-[Kim, D., Song, L., Breitwieser, F.P. and Salzberg, S.L., 2016. Centrifuge: rapid and sensitive classification of metagenomic sequences. Genome research, 26(12), pp.1721-1729.](https://genome.cshlp.org/content/26/12/1721.short)
-
-Uses a combination of the Burrows-Wheeler transform (a sequence compression and mapping technique) and an indexing scheme to produce a quick-to-search, but highly complex reference database.
-
-```{bash}
-targdata=/usr/share/data/BIO331/MATK-1RKIM/small/barcode11.s.fastq
-
-
-centdb=/usr/share/data/centrifuge/centref
-
-centrifuge -p 1 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
-
-head creport.tab
+```{R, eval=F}
+dir.create('metagenomics')
+setwd('metagenomics')
 ```
 
-## Kraken(2)
+*Download a reference file*
 
-[Wood, D.E. and Salzberg, S.L., 2014. Kraken: ultrafast metagenomic sequence classification using exact alignments. Genome biology, 15(3), p.R46.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-3-r46)
+```{R, eval=F}
+# from: ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral
+dir.create('ref')
+download.file('ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.1.1.genomic.fna.gz', 'ref/viral.1.1.genomic.fna.gz')
+download.file('ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.2.1.genomic.fna.gz', 'ref/viral.2.1.genomic.fna.gz')
+download.file('ftp://ftp.ncbi.nlm.nih.gov/refseq/release/viral/viral.3.1.genomic.fna.gz', 'ref/viral.3.1.genomic.fna.gz')
 
-Uses a kmer classification algorithm that breaks the reference data into chunks of sequence (kmers). The kmers are then sorted into a tree-like data structure so that they can be easily and efficiently searched.
+# unzip and put all of the viral reference files into one:
+system("gunzip ref/*")
+system("cat ref/*.fna > ref/viral_all.fasta")
+```
 
-```{bash}
-kdb=/usr/share/data/krakendb/nt-custom/
-targdata=/usr/share/data/BIO331/MATK-1RKIM/small/barcode11.s.fastq
+*Downlaod raw sequence data* 
 
-kraken2 --db $kdb  --threads 1 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+This may take a few minutes...
+
+```{R, eval=F}
+dir.create('data')
+options(timeout=9999) # set a higher timeout for larger downloads
+download.file('https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11092062/v300043428_L02_127_1.fq.gz', 'data/viral_metagenome.fq.gz', extra = 'curl')
+system('gunzip data/viral_metagenome.fq.gz')
+```
+
+
+# BLAST for classification
+
+As we have seen already, BLAST is a popular algorithm for searching for similar nucleotide sequences. Here we will implement a metagenomic search for a set of unknown raw sequence data.
+
+```{R}
+suppressMessages(library(rBLAST)) #quiet down Biostrings!
+library(ggplot2)
+
+list.files(recursive = T)
+
+# read in the query data as a DNAStringSet
+fq <- readDNAStringSet('data/viral_metagenome.fq',format = 'fastq')
+head(fq)
+
+#make a new blast database to search
+reference = 'ref/viral_all.fasta'
+makeblastdb(reference, dbtype = "nucl")
+
+# search the database
+#prepare
+bl <- blast(db=reference, type='blastn')
+
+##### PARALLEL COMPUTING WITH BLAST #####
+#run parallel blast searches
+library(parallel)
+parpredict = function(x){
+return(predict(bl, x))
+}
+clus = makeCluster('16', type ='FORK');
+splits = clusterSplit(clus, fq)
+p_cl = parLapply(clus, splits, parpredict)
+stopCluster(clus)
+cl = dplyr::bind_rows(p_cl)
+##### END PARALLEL COMPUTING ##### 
+```
+# Visualizing Results
+
+## Lookup taxonomy
+
+[About the taxonomizr R package here](https://cran.r-project.org/web/packages/taxonomizr/vignettes/usage.html)
+Build taxonomy database (may take a few minutes).
+
+```{R}
+#install.packages("taxonomizr")
+library(taxonomizr)
+```
+
+*DO NOT RUN* Your instructor will share a copy of the prepared database.
+
+```{R, eval=F}
+dir.create('taxonomy')
+prepareDatabase('taxonomy/accessionTaxa.sql') # this takes a while
+```
+
+*Load the database*
+
+```{R}
+  # find and load the taxonomizr databases 
+  # or ammend to the copy your instructor provides in class
+  tax_db = '../../../../bio331/db/taxonomy' 
+  tax_db_files = list.files(tax_db, full.names = TRUE)
+  nodes = tax_db_files[grepl('nodes', tax_db_files)]
+  names = tax_db_files[grepl('names', tax_db_files)]
+  accession = tax_db_files[grepl('accessionTaxa', tax_db_files)]
+  taxaNodes<-read.nodes.sql(nodes)
+  taxaNames<-read.names.sql(names)
+```
+
+*Search and append to BLAST results*
+
+```{R}
+accid = as.character(cl$SubjectID) # accession IDs of BLAST hits
+#takes accession number and gets the taxonomic ID
+ids<-accessionToTaxa(accid, accession)
+#taxlist displays the taxonomic names from each ID #
+taxlist=getTaxonomy(ids, taxaNodes, taxaNames)
+cltax=cbind(cl,taxlist)
+```
+
+
+## Visualize
+
+```{R}
+library(ggplot2)
+library(forcats)
+
+summary(cltax)
+cltax95 <- cltax[which(cltax$Perc.Ident>95 & cltax$Alignment.Length>140),]
+unique(cltax95$family)
+ggplot(cltax95) +
+  geom_bar(aes(x=fct_infreq(family))) +
+  theme(axis.text.x = element_text(angle = 90))
+
+ggplot(cltax95) +
+  geom_bar(aes(x=fct_infreq(species))) +
+  theme(axis.text.x = element_text(angle = 90))
 
 ```
+What in the world is Protesu virus Isfahan? [See more about this bacteriophage here](https://pubmed.ncbi.nlm.nih.gov/30149052/)
+
+Based on this analysis what is our most likely viral agent causing pneumonia in this patient?
 
 
 # Reading: The Subway Microbiome
 
-For discussion this week read: http://dx.doi.org/10.1016/j.cels.2015.01.001
-
-Pick one of the figures and write a post about it on the [#discussion](https://introbioinformatics.slack.com/messages/CN3DX55M3) channel. Include what you do understand about the data and analysis presented. Also discuss what is unclear or difficult to decipher.
+For discussion this week please read: http://dx.doi.org/10.1016/j.cels.2015.01.001
 
 THEN, find another microbiome study and link it to the discussion with a short explanation of what it presents.
 
-# Next time: 
-
-+ Constructing Kraken databases
-+ Mystery Metagenomic Data
-+ Visualize classification output
-
-
-
-
-
-
-
+We will discuss the subway paper and other papers you find in class next time.

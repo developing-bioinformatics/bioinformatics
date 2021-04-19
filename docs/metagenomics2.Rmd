@@ -1,7 +1,7 @@
 ---
 title: "Metagenomics 2"
 author: "Prof. Harbert"
-date: Meeting 10
+date: Meeting 20
 output: 
   html_document:
     theme: united
@@ -16,6 +16,42 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+
+# Fast(er) Altorithms
+
+There are many approaches to classify large amounts of DNA sequence data in more efficient ways that maintain or improve upon the accuracy of BLAST. In general these methods involve generating complex data structures from the reference data that are relatively efficient to search through. We will test two programs that implement current strategies: [Centrifuge](https://genome.cshlp.org/content/26/12/1721.full.pdf) and [Kraken2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1891-0). 
+
+## Centrifuge
+
+[Kim, D., Song, L., Breitwieser, F.P. and Salzberg, S.L., 2016. Centrifuge: rapid and sensitive classification of metagenomic sequences. Genome research, 26(12), pp.1721-1729.](https://genome.cshlp.org/content/26/12/1721.short)
+
+Uses a combination of the Burrows-Wheeler transform (a sequence compression and mapping technique) and an indexing scheme to produce a quick-to-search, but highly complex reference database.
+
+```{bash}
+
+targdata=
+centdb=/usr/share/data/centrifuge/centref
+
+centrifuge -p 1 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
+
+head creport.tab
+```
+
+## Kraken(2)
+
+[Wood, D.E. and Salzberg, S.L., 2014. Kraken: ultrafast metagenomic sequence classification using exact alignments. Genome biology, 15(3), p.R46.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-3-r46)
+
+Uses a kmer classification algorithm that breaks the reference data into chunks of sequence (kmers). The kmers are then sorted into a tree-like data structure so that they can be easily and efficiently searched.
+
+```{bash}
+kdb=/usr/share/data/krakendb/nt-custom/
+targdata=/usr/share/data/BIO331/MATK-1RKIM/small/barcode11.s.fastq
+
+kraken2 --db $kdb  --threads 1 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+
+```
+
 
 # Kraken 2
 

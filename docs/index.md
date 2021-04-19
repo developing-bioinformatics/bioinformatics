@@ -66,18 +66,13 @@ After having completed Introduction to Bioinformatics you will be able to:
 
 ### <a href='./assembly3.html'> Meeting 18: Assembly 3
 
-### <a href='./assembly4.html'> Meeting 19: Assembly 4
+### <a href='./metagenomics.html'> Meeting 19: Metagenomics
 
+### <a href='./metagenomics2.html'> Meeting 20: Metagenomics 2
 
-### <a href='./metagenomics.html'> Meeting 20: Metagenomics
+### <a href='./mphylo.html'> Meeting 21: Phylogenetics
 
-### <a href='./metagenomics2.html'> Meeting 21: Metagenomics 2
-
-### <a href='./mphylo.html'> Meeting 22: Phylogenetics
-
-### <a href='./opensci.html'> Meeting 23: Open Science, bioRxiv, and course projects
-
-### Meeting 24+: R for Data Science
+### Meeting 22+: R for Data Science
 
 
 <!---- ### <a href='./dplyr.html'> Meeting 20: R and Data Manipulation with 'dplyr'
