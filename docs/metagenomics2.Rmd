@@ -48,7 +48,7 @@ export PATH=$PATH:~/src/kraken2
 
 ### Create a Kraken Database
 
-*DO NOT RUN* 
+*DO NOT RUN* Building the kraken database takes A LOT of time (*mostly getting the taxonomy files set up*). Your instructor will provide a path to the appropriate database files.
 
 ```{bash, eval=F}
 kraken2-build --download-library "viral" --threads 8 --db krakendb
@@ -58,11 +58,18 @@ kraken2-build --build --db krakendb
 ```
 ### Query with Kraken2
 
-```{bash, eval=F}
+We will implement two different queries with kraken2: 1) using the default settings, and 2) using a higher confidence threshold (similar to our BLAST filtering strategy).
+
+```{bash, eval=T}
 kdb=krakendb
 targdata=data/viral_metagenome.fq
 
-kraken2 --db $kdb  --threads 8 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+
+#defaults
+kraken2 --db $kdb  --threads 8 --use-names --report kreport.tab $targdata > kraken.out
+
+# high confidence (not a probability scoring system -- confidence values are arbitrary)
+kraken2 --db $kdb  --threads 8 --confidence 0.9 --use-names --report kreport_conf.tab $targdata > kraken_conf.out
 
 ```
 
@@ -85,11 +92,28 @@ nrow(kreport)
 #add column names to the kreport table
 colnames(kreport) = c('percent', 'readsRooted', 'reads', 'taxRank', 'taxID', 'sciName')
 
-fam.kreport = subset(kreport, kreport$taxRank=='F')
+ggplot(data=kreport[which(kreport$taxRank=='F'),]) +
+  geom_bar(aes(x=sciName, y = readsRooted), stat='identity') +
+  theme(axis.text.x = element_text(angle=90))
 
-ggplot(data=fam.kreport) +
+ggplot(data=kreport[which(kreport$taxRank=='S'),]) +
   geom_bar(aes(x=sciName, y = readsRooted), stat='identity') +
   theme(axis.text.x = element_text(angle=90))
 
 ```
 
+```{R}
+kreport_conf=read.delim('kreport_conf.tab', sep ='\t', header=F)
+
+#add column names to the kreport table
+colnames(kreport_conf) = c('percent', 'readsRooted', 'reads', 'taxRank', 'taxID', 'sciName')
+
+ggplot(data=kreport_conf[which(kreport_conf$taxRank=='F'),]) +
+  geom_bar(aes(x=sciName, y = readsRooted), stat='identity') +
+  theme(axis.text.x = element_text(angle=90))
+
+ggplot(data=kreport_conf[which(kreport_conf$taxRank=='S'),]) +
+  geom_bar(aes(x=sciName, y = readsRooted), stat='identity') +
+  theme(axis.text.x = element_text(angle=90))
+
+```
