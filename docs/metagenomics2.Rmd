@@ -20,23 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Fast(er) Altorithms
 
-There are many approaches to classify large amounts of DNA sequence data in more efficient ways that maintain or improve upon the accuracy of BLAST. In general these methods involve generating complex data structures from the reference data that are relatively efficient to search through. We will test two programs that implement current strategies: [Centrifuge](https://genome.cshlp.org/content/26/12/1721.full.pdf) and [Kraken2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1891-0). 
-
-## Centrifuge
-
-[Kim, D., Song, L., Breitwieser, F.P. and Salzberg, S.L., 2016. Centrifuge: rapid and sensitive classification of metagenomic sequences. Genome research, 26(12), pp.1721-1729.](https://genome.cshlp.org/content/26/12/1721.short)
-
-Uses a combination of the Burrows-Wheeler transform (a sequence compression and mapping technique) and an indexing scheme to produce a quick-to-search, but highly complex reference database.
-
-```{bash}
-
-targdata=
-centdb=/usr/share/data/centrifuge/centref
-
-centrifuge -p 1 -q -x $centdb -U $targdata -S out.centclass --report-file creport.tab --out-fmt tab
-
-head creport.tab
-```
+There are many approaches to classify large amounts of DNA sequence data in more efficient ways that maintain or improve upon the accuracy of BLAST. In general these methods involve generating complex data structures from the reference data that are relatively efficient to search.
 
 ## Kraken(2)
 
@@ -44,93 +28,53 @@ head creport.tab
 
 Uses a kmer classification algorithm that breaks the reference data into chunks of sequence (kmers). The kmers are then sorted into a tree-like data structure so that they can be easily and efficiently searched.
 
-```{bash}
-kdb=/usr/share/data/krakendb/nt-custom/
-targdata=/usr/share/data/BIO331/MATK-1RKIM/small/barcode11.s.fastq
+[Manual](https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown)
 
-kraken2 --db $kdb  --threads 1 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
 
+### Installation
+
+```{bash, eval=F,}
+cd ~/src
+git clone https://github.com/DerrickWood/kraken2
+cd kraken2
+./install_kraken2.sh ./
 ```
 
-
-# Kraken 2
-
-Based on our testing Kraken 2 was a good balance of time and space efficiency. Today we will experiment with Kraken2 further by building a custom database to search against.
-
-Guidance on using Kraken2 can be found in the [Manual](https://ccb.jhu.edu/software/kraken2/index.shtml?t=manual)
-
-Also, the [Kraken2 paper](https://www.biorxiv.org/content/10.1101/762302v1) is a good resource that shows how Kraken2 performs relative to related programs.
-
-## Custom DB: Plastid genomes
-
-First, we must download the RefSeq plastid genomes database.
+Then add to ~/.bashrc
 
 ```{bash, eval=F}
-mkdir kraken
-cd kraken
-
-#1) Download Plastid reference data:
-wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plastid/plastid.1.1.genomic.fna.gz
-wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plastid/plastid.2.1.genomic.fna.gz
-wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plastid/plastid.3.1.genomic.fna.gz
-
-
-#2) Then, these files need to be unzipped (uncompressed).
-
-gunzip *.fna.gz
-
-#3) Name your database
-DBNAME='plastid_custom'
-
-#4) Get the NCBI taxonomy files:
-kraken2-build --download-taxonomy --db $DBNAME
-
-#5) Add custom reference data
-kraken2-build --add-to-library plastid.1.1.genomic.fna --db $DBNAME
-kraken2-build --add-to-library plastid.2.1.genomic.fna --db $DBNAME
-kraken2-build --add-to-library plastid.3.1.genomic.fna --db $DBNAME
-
-#6) Finalize the database
-kraken2-build --build --db $DBNAME
-
+export PATH=$PATH:~/src/kraken2
 ```
 
-## Query the custom DB
+### Create a Kraken Database
 
-Now we can test our custom database using our MATK eDNA sample file.
-
-Recall that last time we queried the entire 'nt' database using:
+*DO NOT RUN* 
 
 ```{bash, eval=F}
-kdb=/usr/share/data/krakendb/nt-custom/
-targdata=/usr/share/data/BIO331/MATK-1RKIM/small/barcode11.s.fastq
+kraken2-build --download-library "viral" --threads 8 --db krakendb
+kraken2-build --download-taxonomy --threads 8 --db krakendb
+kraken2-build --build --db krakendb
 
-kraken2 --db $kdb  --threads 1 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
+```
+### Query with Kraken2
+
+```{bash, eval=F}
+kdb=krakendb
+targdata=data/viral_metagenome.fq
+
+kraken2 --db $kdb  --threads 8 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
 
 ```
 
-All we need to do is substitute the path to our custom database.
-
-*Make sure working directory is set to the 'kraken' folder*
-
-```{bash, eval = FALSE}
-kdb=plastid_custom
-targdata=/usr/share/data/BIO331/MATK-1RKIM/small/barcode11.s.fastq
-
-kraken2 --db $kdb  --threads 1 --use-names --report kreport.tab --fastq-input $targdata > kraken.out
-
-```
 
 # Visualizing Kraken report files
-
-TIP: Check out the quick-reference guide on [ggplot2 from RStudio](https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
 
 Use ggplot to show the # of reads mapping to genera.
 
 ```{R}
 library(ggplot2)
-library(taxonomizr)
-kreport=read.delim('kraken/kreport.tab', sep ='\t', header=F)
+
+kreport=read.delim('kreport.tab', sep ='\t', header=F)
 
 #preview
 head(kreport)
@@ -144,40 +88,8 @@ colnames(kreport) = c('percent', 'readsRooted', 'reads', 'taxRank', 'taxID', 'sc
 fam.kreport = subset(kreport, kreport$taxRank=='F')
 
 ggplot(data=fam.kreport) +
-  geom_bar(aes(x=sciName, y = readsRooted), stat='identity') 
-
-```
-
-How can we improve upon this graph? What other ways might we represent these data?
-
-+ experiment with x-axis label alignment
-+ order x axis??
-+ theme_bw() or theme_linedraw()
-+ plot 'reads' or 'percent'
-+ plot by family rather than genus to smooth over apparent false positives?
-
-Try:
-
-```{R}
-
-x <- transform(fam.kreport, variable=reorder(sciName, -readsRooted) ) 
-x = x[order(-x$readsRooted),]
-
-
-ggplot(data=x[1:5,]) +
   geom_bar(aes(x=sciName, y = readsRooted), stat='identity') +
-  theme(axis.text.x=element_text(angle=90))
+  theme(axis.text.x = element_text(angle=90))
 
 ```
-Also try:
-
-```{R}
-ggplot(data=kreport, aes(x=log(readsRooted), y=log(percent))) +
-  geom_point() + 
-  geom_text(aes(label=sciName),hjust=0, vjust=0, size=1)
-
-```
-# Homework
-
-For next class: Using files for barcode10, barcode11, barcode12, or none.fastq, create a graph showing the read counts for the Kraken output based on the entire 'nt' database and one based on the plastid custom database. Post to #plots and discuss any differences.
 
