@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Fast(er) Altorithms
 
-There are many approaches to classify large amounts of DNA sequence data in more efficient ways that maintain or improve upon the accuracy of BLAST. In general these methods involve generating complex data structures from the reference data that are relatively efficient to search.
+There are many methodological approaches to classify large amounts of DNA sequence data in more efficient ways that maintain or improve upon the accuracy of BLAST. In general these methods involve generating complex data structures from the reference data that are relatively efficient to search.
 
 ## Kraken(2)
 
